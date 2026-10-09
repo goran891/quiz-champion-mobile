@@ -582,7 +582,7 @@ function renderCurriculumTracks(){
  document.getElementById('currDetails').innerHTML='';
  document.getElementById('currGrid').innerHTML='<button class="currTile" onclick="chooseTrack(\'science\')"><span>🧪</span>١. بەشی زانستی</button><button class="currTile" onclick="chooseTrack(\'literature\')"><span>📚</span>٢. بەشی وێژەیی</button>';
 }
-function chooseTrack(track){curriculumState.track=track;curriculumState.grade='';renderCurriculumGrades()}
+function chooseTrack(track){curriculumState.track=track;curriculumState.stage=track;curriculumState.grade='';renderCurriculumGrades()}
 function renderCurriculumGrades(){
  const t=curriculumState.track, type=t==='science'?'زانستی':'وێژەیی';
  document.getElementById('currTitle').textContent='پۆلەکانی بەشی '+type;
@@ -592,6 +592,7 @@ function renderCurriculumGrades(){
 }
 function chooseGrade(n){curriculumState.grade=n;renderCurriculumSubjects(curriculumState.track)}
 function renderCurriculumSubjects(stage){
+ if(stage==='senior' && curriculumState.track) stage=curriculumState.track;
  const isSenior=stage==='science'||stage==='literature';
  const list=curriculumData[stage]||curriculumData.kids;
  document.getElementById('currTitle').textContent=isSenior?'پۆلی '+curriculumState.grade+' '+(stage==='science'?'زانستی':'وێژەیی')+' — وانەکان':stage==='kids'?'بازنەی ١ — وانەکان':'بازنەی ٢ — وانەکان';
