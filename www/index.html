@@ -624,9 +624,18 @@ function openSubjectQuiz(){
 
 function goStage(event,theme){
   if(event){event.preventDefault();event.stopPropagation();}
-  setTheme(theme);
-  openCurriculum(theme);
-  return true;
+  try {
+    setTheme(theme);
+    openCurriculum(theme);
+    const overlay=document.getElementById('curriculumOverlay');
+    if(!overlay || overlay.style.display!=='flex') throw new Error('curriculum overlay did not open');
+    return true;
+  } catch(err) {
+    console.error('Stage navigation failed:',err);
+    if(typeof toast==='function') toast('کێشەیەک لە کردنەوەی وانەکان هەیە؛ پەڕەکە نوێ بکەرەوە.');
+    else alert('کێشەیەک لە کردنەوەی وانەکان هەیە. تکایە پەڕەکە نوێ بکەرەوە.');
+    return false;
+  }
 }
 function filterBook(id){
   const book=books.find(b=>b.id===id)||books[0];
@@ -954,6 +963,20 @@ async function applyUserTheme(){
 load();
 refreshAccess();
 </script>
-<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}</script>
+<script>
+/* Update safety: remove older offline caches that can keep stale UI visible. */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
+    try {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(reg => reg.unregister()));
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.filter(k => k.startsWith("quiz-champion-")).map(k => caches.delete(k)));
+      }
+    } catch (e) { console.warn("Cache refresh:", e); }
+  });
+}
+</script>
 </body></html>// Auto Deploy Test
 <!-- Auto Deploy Connected -->
