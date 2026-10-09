@@ -625,15 +625,20 @@ function openSubjectQuiz(){
 function goStage(event,theme){
   if(event){event.preventDefault();event.stopPropagation();}
   try {
-    setTheme(theme);
+    // Opening the curriculum must not depend on theme persistence/localStorage.
+    try { setTheme(theme,false); } catch(themeError) { console.warn('Theme styling skipped',themeError); }
     openCurriculum(theme);
     const overlay=document.getElementById('curriculumOverlay');
-    if(!overlay || overlay.style.display!=='flex') throw new Error('curriculum overlay did not open');
+    if(!overlay) throw new Error('curriculum overlay element missing');
+    overlay.style.display='flex';
+    overlay.style.visibility='visible';
+    overlay.style.opacity='1';
     return true;
   } catch(err) {
     console.error('Stage navigation failed:',err);
-    if(typeof toast==='function') toast('کێشەیەک لە کردنەوەی وانەکان هەیە؛ پەڕەکە نوێ بکەرەوە.');
-    else alert('کێشەیەک لە کردنەوەی وانەکان هەیە. تکایە پەڕەکە نوێ بکەرەوە.');
+    const message='کێشەی کردنەوە: '+(err && err.message ? err.message : 'هەڵەی نەناسراو');
+    if(typeof toast==='function') toast(message);
+    else alert(message);
     return false;
   }
 }
