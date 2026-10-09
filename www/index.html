@@ -546,13 +546,12 @@ function renderSections(bookId){
 function goStage(event,theme){
   if(event){event.preventDefault();}
   setTheme(theme);
-  if(!currentUser){openAuth('login');toast('تکایە سەرەتا بچۆ ژوورەوە');return false;}
   showHomeSection('quizSec');
   renderSections();
+  scrollToId('quizSec');
   return true;
 }
 function filterBook(id){
- if(!currentUser){openAuth('login');toast('تکایە سەرەتا بچۆ ژوورەوە');return;}
   const book=books.find(b=>b.id===id)||books[0];
   document.getElementById("qTitle").textContent="🧠 بەشەکانی "+(book?.title||"کتێب");
   renderSections(id);
@@ -747,8 +746,10 @@ function updateAccessUI(){
   }
 }
 function guard(sectionId){
- if(!currentUser){openAuth('login');toast('تکایە سەرەتا بچۆ ژوورەوە');return false;}
- showHomeSection(sectionId);return true;
+ showHomeSection(sectionId);
+ if(sectionId==='booksSec') renderBooks();
+ if(sectionId==='quizSec') renderSections();
+ return true;
 }
 function guardPage(page){
  if(!currentUser){openAuth('login');toast('تکایە سەرەتا بچۆ ژوورەوە');return false;}
