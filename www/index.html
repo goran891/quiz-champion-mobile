@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#7048ff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Quiz Champion">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Quiz Champion | پێشەنگی زانست</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+  function ku(n){return String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);}
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800;900&display=swap');
+:root{--purple:#7048ff;--purple2:#3d22b8;--cyan:#19c9dc;--yellow:#f7c93f;--red:#ef476f;--navy:#070b2a;--navy2:#0d1240;--card:#101743;--line:#252c5b;--text:#f7f8ff;--muted:#a8afd0}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:'Noto Sans Arabic',system-ui,sans-serif;background:radial-gradient(circle at 50% -10%,#25206e 0,#0b0f35 34%,#050821 75%);color:var(--text);min-height:100vh}
+button{font:inherit;cursor:pointer;border:0}.nav{height:82px;background:rgba(5,8,31,.92);backdrop-filter:blur(18px);border-bottom:1px solid #25265a;display:flex;align-items:center;position:sticky;top:0;z-index:30}
+.navin{width:min(1240px,94%);margin:auto;display:flex;align-items:center;gap:22px}.brand{display:flex;align-items:center;gap:11px;margin-left:auto}.logo{width:53px;height:53px;border-radius:16px;background:linear-gradient(135deg,#7c51ff,#4e27d8);display:grid;place-items:center;color:#fff;font-size:26px;box-shadow:0 10px 28px #6945ff55}.brand b{font-size:21px}.brand b::first-letter{color:#fff}.brand small{display:block;color:#a7afd0;font-size:10px}.links{display:flex;gap:4px;align-items:center}.links button{background:transparent;color:#d7daf0;font-weight:800;padding:11px 14px;border-radius:13px}.links button:hover,.links button.active{background:#4b2bc52b;color:#fff}.user{display:flex;align-items:center;gap:8px;margin-right:auto}.avatar{width:44px;height:44px;border-radius:14px;background:#1a1d4b;display:grid;place-items:center;font-size:19px;border:1px solid #363b70}.login{background:linear-gradient(135deg,var(--yellow),#ffad24);color:#231b4d;padding:10px 15px;border-radius:12px;font-weight:900;box-shadow:0 7px 18px #f7c93f2b}
+main{min-height:calc(100vh - 82px)}
+.hero{width:min(1240px,94%);margin:22px auto 0;border-radius:30px;min-height:525px;padding:55px 30px 0;overflow:hidden;position:relative;background:linear-gradient(90deg,#63c4ec 0%,#63c4ec 7%,#3150a8 25%,#15165f 43%,#10135a 50%,#15165f 57%,#3150a8 75%,#63c4ec 93%,#63c4ec 100%);border:4px solid #fff;box-shadow:0 25px 70px #02051d88}
+.hero:before{content:"";position:absolute;inset:0;background-image:radial-gradient(#754fff88 1px,transparent 1px);background-size:27px 27px;opacity:.24;mask-image:linear-gradient(90deg,#000,transparent 42%,transparent 58%,#000)}
+.hero:after{content:"";position:absolute;width:460px;height:460px;left:50%;top:35px;transform:translateX(-50%);border-radius:50%;background:#5d3bff18;filter:blur(35px)}
+.heroGrid{position:relative;z-index:3;display:grid;grid-template-columns:330px 1fr 330px;align-items:end;min-height:470px}.heroCenter{text-align:center;align-self:center;padding-bottom:55px;position:relative;z-index:4}.eyebrow{font-size:14px;color:#d9d7ff;font-weight:800;margin-bottom:9px}.hero h1{font-size:47px;line-height:1.38;margin:0 0 14px;font-weight:900;text-shadow:0 8px 28px #0008}.titleYellow{color:var(--yellow)}.titleWhite{color:#fff}.titleCyan{color:#25d7e8}.hero p{font-size:17px;line-height:2;margin:0 auto 25px;color:#f0f2ff;max-width:650px}.descYellow{color:var(--yellow);font-weight:800}.descCyan{color:#25d7e8;font-weight:800}.descRed{color:#ff5d78;font-weight:800}.heroBtns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.primary{background:linear-gradient(135deg,var(--yellow),#ffb41f);color:#221846;padding:14px 27px;border-radius:14px;font-weight:900;box-shadow:0 12px 30px #f7c93f38}.ghost{background:linear-gradient(135deg,#6537ff,#3c23ad);color:#fff;border:1px solid #8c6cff;padding:13px 24px;border-radius:14px;font-weight:800;box-shadow:0 10px 25px #512eff35}.character{width:315px;max-width:100%;display:block;filter:drop-shadow(0 25px 25px #0008);animation:float 4.5s ease-in-out infinite}.boy{justify-self:start;transform-origin:bottom center}.girl{justify-self:end;animation-delay:-2s}.characterWrap{position:relative;align-self:end;z-index:8}.bubble{position:absolute;top:18px;z-index:20;z-index:12;background:#fff;color:#17183d;padding:8px 10px;border-radius:14px;font-weight:900;font-size:11px;line-height:1.45;width:112px;text-align:center;box-shadow:0 12px 28px #0005}.boyWrap .bubble{right:-28px}.girlWrap .bubble{left:-28px}.bubble:after{content:"";position:absolute;bottom:-9px;border-width:9px 9px 0;border-style:solid;border-color:#fff transparent transparent}.boyWrap .bubble:after{right:25px}.girlWrap .bubble:after{left:25px}@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-9px) rotate(-.7deg)}}
+.stats{width:min(1160px,90%);margin:-35px auto 38px;position:relative;z-index:6;display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.stat{min-height:92px;border:1px solid rgba(255,255,255,.16);appearance:none;-webkit-appearance:none;text-align:right;width:100%;font-family:inherit;border-radius:19px;padding:17px 19px;box-shadow:0 18px 40px #02051d66;display:flex;align-items:center;gap:12px;color:#fff}.stat:nth-child(1){background:linear-gradient(135deg,#8066d9,#a08be8)}.stat:nth-child(2){background:linear-gradient(135deg,#d48770,#e8a08d)}.stat:nth-child(3){background:linear-gradient(135deg,#5b98c9,#79b7df)}.stat:nth-child(4){background:linear-gradient(135deg,#68aa8b,#8ac7aa)}.stat:hover{transform:translateY(-3px);filter:brightness(1.08);box-shadow:0 22px 45px #02051d88}.stat:active{transform:translateY(-1px)}.statIcon{width:50px;height:50px;border-radius:15px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:23px;border:1px solid rgba(255,255,255,.16)}.stat:nth-child(2) .statIcon,.stat:nth-child(3) .statIcon,.stat:nth-child(4) .statIcon{background:rgba(255,255,255,.17)}.stat b{font-size:25px;line-height:1.2;display:block;color:#fff;font-weight:900}.stat span{color:#fff;font-size:14px;font-weight:800;opacity:.98}
+.section{width:min(1180px,94%);margin:0 auto 48px}.head{display:flex;align-items:end;justify-content:space-between;margin-bottom:18px}.head h2{font-size:24px;margin:0}.head p{color:#929abd;margin:5px 0 0;font-size:13px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.card{background:linear-gradient(145deg,#121943,#0b1034);border:1px solid #282f66;border-radius:21px;padding:19px;box-shadow:0 12px 35px #0003}.bookIcon{height:125px;border-radius:16px;background:linear-gradient(135deg,#1d2b78,#16334b);display:grid;place-items:center;font-size:55px;margin-bottom:15px}.card h3{margin:0 0 6px;font-size:17px}.card p{margin:0;color:#929abd;font-size:12px}.cardBottom{display:flex;justify-content:space-between;align-items:center;margin-top:17px}.pill{background:#211d50;color:#bcb1ff;border:1px solid #40387b;border-radius:20px;padding:6px 10px;font-size:10px;font-weight:800}.go{background:linear-gradient(90deg,#6242e8,#1bbbd0);color:#fff;border-radius:11px;padding:9px 14px;font-weight:800}.empty{padding:40px;text-align:center;color:#929abd;background:#10153c;border-radius:20px;border:1px dashed #343b70}
+.quiz{display:none;width:min(900px,94%);margin:35px auto 70px}.quizTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.back{background:#141a45;color:#dfe2f7;border:1px solid #30376c;padding:9px 14px;border-radius:11px}.progress{height:9px;background:#171c48;border-radius:10px;overflow:hidden;margin-bottom:18px}.bar{height:100%;background:linear-gradient(90deg,var(--purple),var(--cyan));width:0}.qcard{background:linear-gradient(145deg,#141a49,#0c1135);border:1px solid #30376d;border-radius:25px;padding:30px;box-shadow:0 20px 50px #0005}.qmeta{display:flex;gap:8px;margin-bottom:18px}.qcard h2{font-size:22px;line-height:1.9;margin:0 0 22px}.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}.opt{background:#0f153b;border:2px solid #252d61;padding:15px;border-radius:15px;text-align:right;font-weight:700;color:#dfe2f7}.opt:hover{border-color:#7158ef;background:#19174e}.opt.sel{border-color:var(--purple);background:#211957;color:#fff}.opt.correct{border-color:#20c987!important;background:#103e34!important;color:#7ff0c2!important}.opt.wrong{border-color:#ef476f!important;background:#46182a!important;color:#ff9aae!important}.answerFeedback{display:none;margin-top:18px;padding:15px 18px;border-radius:15px;font-weight:800;line-height:1.8}.answerFeedback.correct{display:block;background:#103e34;border:1px solid #20c987;color:#8af3c9}.answerFeedback.wrong{display:block;background:#46182a;border:1px solid #ef476f;color:#ff9aae}.answerFeedback .earned{color:#f7c93f;font-size:16px;margin-right:6px}.quizNav{display:flex;justify-content:space-between;margin-top:20px}.navBtn{padding:12px 20px;border-radius:13px;background:#20254e;color:#dfe2f7;font-weight:800}.next{background:linear-gradient(90deg,#6547e8,#22bfd0);color:white}
+.result{display:none;width:min(700px,94%);margin:55px auto;text-align:center}.resultCard{background:linear-gradient(145deg,#141a49,#0c1135);border:1px solid #30376d;border-radius:28px;padding:45px;box-shadow:0 20px 50px #0005}.score{font-size:55px;font-weight:900;color:#65d8e8}.result button{margin-top:15px}.toast{position:fixed;bottom:25px;left:25px;background:#202640;color:white;padding:13px 18px;border-radius:12px;display:none;z-index:99}
+
+
+.rewardGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:20px!important;align-items:stretch}
+.rewardCard{min-height:205px;position:relative;overflow:hidden;border:1px solid rgba(40,50,100,.10)!important;color:#202544!important;box-shadow:0 15px 35px rgba(25,35,90,.10)!important;display:flex;flex-direction:column;justify-content:flex-start}
+.rewardCard:before{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-55px;top:-60px;background:rgba(255,255,255,.38)}
+.rewardCard:nth-child(1){background:linear-gradient(135deg,#f4edff,#dfd2ff)!important}
+.rewardCard:nth-child(2){background:linear-gradient(135deg,#fff4dc,#ffe2ad)!important}
+.rewardCard:nth-child(3){background:linear-gradient(135deg,#eaf3ff,#cfe3ff)!important}
+.rewardCard:nth-child(4){background:linear-gradient(135deg,#fff9dc,#f7eaa8)!important}
+.rewardCard:nth-child(5){background:linear-gradient(135deg,#eef2f6,#d8e1ea)!important}
+.rewardCard:nth-child(6){background:linear-gradient(135deg,#e7eef5,#d4dee8)!important}
+.rewardIcon{position:relative;z-index:1;font-size:40px;width:62px;height:62px;border-radius:18px;display:grid;place-items:center;margin-bottom:12px;background:rgba(255,255,255,.62)!important;border:1px solid rgba(255,255,255,.72);box-shadow:0 8px 18px rgba(30,40,80,.08)}
+.rewardTop{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%}
+.rewardName{position:relative;z-index:1;font-size:18px;font-weight:900;color:#202544!important}
+.rewardRank{font-size:13px;font-weight:900;color:#4f5877;white-space:nowrap}
+.rewardPoints{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;margin-top:10px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid rgba(50,60,110,.10);color:#26305b;font-size:13px;font-weight:900;box-shadow:0 5px 12px rgba(30,40,80,.06);width:max-content}
+.rewardDesc{position:relative;z-index:1;color:#59627d!important;font-size:12px;margin-top:8px;line-height:1.8}
+@media(max-width:900px){.rewardGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:600px){.rewardGrid{grid-template-columns:1fr!important}}
+.rewardCard{min-height:205px;position:relative;overflow:hidden;border:1px solid rgba(40,50,100,.10)!important;color:#202544!important;box-shadow:0 15px 35px rgba(25,35,90,.10)!important}
+.rewardCard:before{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-55px;top:-60px;background:rgba(255,255,255,.38)}
+.rewardCard:nth-child(1){background:linear-gradient(135deg,#eef2f6,#d8e1ea)!important}
+.rewardCard:nth-child(2){background:linear-gradient(135deg,#f1f4f8,#d9e2ee)!important}
+.rewardCard:nth-child(3){background:linear-gradient(135deg,#fff9dc,#f7eaa8)!important}
+.rewardCard:nth-child(4){background:linear-gradient(135deg,#f0e8ff,#dfd0ff)!important}
+.rewardCard:nth-child(5){background:linear-gradient(135deg,#e1f8f5,#c4eee7)!important}
+.rewardCard:nth-child(6){background:linear-gradient(135deg,#e4f2ff,#c9e5ff)!important}
+.rewardIcon{position:relative;z-index:1;font-size:40px;width:62px;height:62px;border-radius:18px;display:grid;place-items:center;margin-bottom:14px;background:rgba(255,255,255,.58)!important;border:1px solid rgba(255,255,255,.72);box-shadow:0 8px 18px rgba(30,40,80,.08)}
+.rewardName{position:relative;z-index:1;font-size:19px;font-weight:900;color:#202544!important}
+.rewardDesc{position:relative;z-index:1;color:#59627d!important;font-size:12px;margin-top:6px;line-height:1.8}
+.rewardCard .pill{background:rgba(255,255,255,.60)!important;color:#3e4770!important;border-color:rgba(50,60,110,.10)!important}
+.specialPage{animation:pageIn .28s ease}@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.rankCard{position:relative;overflow:hidden}.rankNum{font-size:31px;font-weight:900;color:#f7c93f;min-width:48px}.rankPoints{margin-right:auto;color:#67ddea;font-weight:900}@media(max-width:950px){.heroGrid{grid-template-columns:220px 1fr 220px}.character{width:210px}.hero h1{font-size:36px}.stats{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr 1fr}.navin{flex-wrap:wrap}.links{display:flex;order:3;width:100%;overflow-x:auto;overflow-y:hidden;justify-content:flex-start;gap:4px;padding:4px 2px 7px;scrollbar-width:none}.links::-webkit-scrollbar{display:none}.links button{white-space:nowrap;flex:0 0 auto}}
+@media(max-width:650px){.stats,.cards{grid-template-columns:1fr}.hero{padding-top:30px}.heroGrid{display:flex;flex-direction:column;min-height:0}.characterWrap{display:none}.heroCenter{padding:45px 10px}.hero h1{font-size:31px}.hero p{font-size:14px}.nav{height:auto;min-height:82px;padding:7px 0}.navin{gap:7px;row-gap:4px;width:96%}.brand{margin-left:auto}.brand .refLogo{max-width:145px;height:auto}.user{margin-right:auto;max-width:58%;overflow:hidden}.user .avatar,.user>span{display:none}.user .login{padding:8px 9px;font-size:11px;white-space:nowrap}.links{order:3;flex-basis:100%;width:100%;padding-top:5px}.links button{padding:9px 12px;font-size:12px}.brand b{font-size:17px}.stageCards{gap:14px}.stageCard{cursor:pointer}.stageArt{height:265px!important}.referenceArt{background-position:center!important;background-size:cover!important}}
+.booksHighlight{margin-top:4px}
+#bookCards .card{border:1px solid rgba(116,82,255,.28);box-shadow:0 18px 40px rgba(35,28,100,.16)}
+#bookCards .bookIcon{background:linear-gradient(135deg,#6550e8,#19bcd2)}
+
+.bookActions{display:flex;gap:8px;align-items:center;margin-top:17px;flex-wrap:wrap}
+.bookRead{background:linear-gradient(90deg,#f7c93f,#ffad24);color:#24194d;border:0;border-radius:11px;padding:9px 13px;font-weight:900;cursor:pointer}
+.bookQuiz{background:linear-gradient(90deg,#6242e8,#1bbbd0);color:#fff;border:0;border-radius:11px;padding:9px 13px;font-weight:900;cursor:pointer}
+.bookIcon{cursor:pointer;transition:transform .2s,filter .2s}
+.bookIcon:hover{transform:translateY(-2px);filter:brightness(1.08)}
+
+.paymentPage{width:min(1000px,94%);margin:35px auto 70px}
+.paymentBox{background:linear-gradient(145deg,#141a49,#0c1135);border:1px solid #30376d;border-radius:28px;padding:28px;box-shadow:0 20px 50px #0005}
+.paymentStatus{padding:15px 18px;border-radius:16px;background:#151b47;border:1px solid #30376d;margin-bottom:20px;line-height:1.9}
+.paymentStatus.free{border-color:#3a4276;color:#dfe2f7}.paymentStatus.pending{border-color:#f7c93f;color:#ffe9a1}.paymentStatus.paid{border-color:#20c987;color:#8af3c9}
+.paymentMethods{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.payMethod{background:#0f153b;border:2px solid #252d61;color:#dfe2f7;padding:16px;border-radius:16px;text-align:center;font-weight:900}
+.payMethod.active{border-color:#6e50ff;background:#211957;color:#fff}
+.paymentForm{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.paymentForm input{width:100%;background:#0f153b;border:1px solid #30376d;color:#fff;padding:13px 14px;border-radius:13px;font:inherit}
+.paymentForm .wide{grid-column:1/-1}
+.paymentSubmit{background:linear-gradient(90deg,#6242e8,#1bbbd0);color:#fff;padding:13px 20px;border-radius:13px;font-weight:900}
+.payInfo{margin-top:18px;padding:16px;border-radius:16px;background:#10153c;border:1px dashed #343b70;color:#bfc6e5;line-height:2}
+.locked{position:relative;opacity:.55;filter:saturate(.5);pointer-events:none}
+.lockedNote{font-size:12px;color:#ffda70;font-weight:900;margin-top:8px}
+@media(max-width:700px){.paymentMethods,.paymentForm{grid-template-columns:1fr}.paymentForm .wide{grid-column:auto}}
+
+
+/* === Visual stage redesign: frontend cards, not a flat image === */
+.stageDecor{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.stageDecor:before,.stageDecor:after{content:"";position:absolute;border-radius:50%;filter:blur(2px);opacity:.85}
+.stageDecor:before{width:180px;height:180px;left:6%;top:8%;background:radial-gradient(circle,#fff8 0 18%,transparent 19%),radial-gradient(circle,#ffe27a55 0 42%,transparent 43%)}
+.stageDecor:after{width:240px;height:240px;right:5%;bottom:8%;background:radial-gradient(circle,#fff8 0 14%,transparent 15%),radial-gradient(circle,#7de7ff55 0 45%,transparent 46%)}
+.heroGrid{z-index:4}
+.characterWrap{transition:transform .45s ease,filter .45s ease}
+.character{object-fit:contain;transition:transform .45s ease,filter .45s ease}
+/* Keep the original high-quality 3D characters; stage styling changes their presentation rather than replacing them with flat 2D drawings. */
+body[data-theme="kids"] .character{width:320px;filter:drop-shadow(0 25px 22px #5d347755);animation:floatKids 3.8s ease-in-out infinite}
+body[data-theme="kids"] .girl{animation-delay:-1.8s}
+body[data-theme="teens"] .character{width:335px;filter:drop-shadow(0 27px 24px #07183eaa);animation:floatTeens 4.2s ease-in-out infinite}
+body[data-theme="teens"] .girl{animation-delay:-2.1s}
+body[data-theme="senior"] .character{width:345px;filter:drop-shadow(0 28px 26px #02051dcc);animation:floatSenior 4.8s ease-in-out infinite}
+body[data-theme="senior"] .girl{animation-delay:-2.4s}
+@keyframes floatKids{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-13px) rotate(1deg)}}
+@keyframes floatTeens{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-10px) rotate(-.5deg)}}
+@keyframes floatSenior{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(.25deg)}}
+body[data-theme="kids"] .hero{background:linear-gradient(115deg,#ffd75f 0%,#ff9fbe 24%,#6bc8ff 52%,#77e9d4 78%,#a9efff 100%);min-height:570px}
+body[data-theme="kids"] .hero:before{background-image:radial-gradient(#fff 1.5px,transparent 1.5px);background-size:23px 23px;opacity:.28}
+body[data-theme="kids"] .heroCenter{background:rgba(255,255,255,.10);border:1px solid #ffffff38;border-radius:28px;padding:28px 22px 38px;backdrop-filter:blur(5px);box-shadow:0 18px 40px #7a3d6b22}
+body[data-theme="kids"] .stageBadge{background:#fff;color:#6f3b62;border-color:#fff0;box-shadow:0 8px 25px #ff7fb855}
+body[data-theme="kids"] .hero h1{font-size:49px;text-shadow:0 4px 18px #4f3c7a33}
+body[data-theme="kids"] .hero p{color:#fff}
+body[data-theme="kids"] .heroCenter:after{content:none}
+body[data-theme="teens"] .hero{background:linear-gradient(115deg,#27c9e8 0%,#286ed0 35%,#27388e 62%,#7456e8 100%);min-height:565px}
+body[data-theme="teens"] .heroCenter{background:rgba(8,24,69,.18);border:1px solid #ffffff22;border-radius:28px;padding:28px 22px 38px;backdrop-filter:blur(6px)}
+body[data-theme="teens"] .heroCenter:after{content:none}
+body[data-theme="senior"] .hero{background:linear-gradient(115deg,#2a8fb5 0%,#263c82 36%,#171b4f 62%,#654bc4 100%);min-height:570px}
+body[data-theme="senior"] .heroCenter{background:rgba(4,9,31,.28);border:1px solid #ffffff18;border-radius:28px;padding:28px 22px 38px;backdrop-filter:blur(7px)}
+body[data-theme="senior"] .heroCenter:after{content:none}
+body[data-theme="kids"] .boyWrap{transform:translateX(10px)}
+body[data-theme="kids"] .girlWrap{transform:translateX(-10px)}
+body[data-theme="teens"] .boyWrap{transform:translateX(-4px)}
+body[data-theme="teens"] .girlWrap{transform:translateX(4px)}
+body[data-theme="senior"] .boyWrap{transform:translateX(0)}
+body[data-theme="senior"] .girlWrap{transform:translateX(0)}
+/* Stronger separation between the two characters in stages 1 and 2 */
+body[data-theme="kids"] .boyWrap .bubble{right:-12px}
+body[data-theme="kids"] .girlWrap .bubble{left:-12px}
+body[data-theme="teens"] .boyWrap .bubble{right:-6px}
+body[data-theme="teens"] .girlWrap .bubble{left:-6px}
+@media(max-width:950px){body[data-theme="kids"] .character,body[data-theme="teens"] .character,body[data-theme="senior"] .character{width:235px}}
+@media(max-width:650px){body[data-theme="kids"] .heroCenter,body[data-theme="teens"] .heroCenter,body[data-theme="senior"] .heroCenter{padding:24px 14px 30px}.stageDecor{display:none}}
+
+/* === Quiz Champion 3-stage theme system === */
+body[data-theme="kids"]{--themeA:#ffb84a;--themeB:#ff6fae;--themeC:#5dd6ff;--themeBg:#fff8ed;--themeText:#2a2450;background:radial-gradient(circle at 50% -10%,#ffe7f3 0,#fff8ed 42%,#e9f9ff 100%);color:var(--themeText)}
+body[data-theme="kids"] .nav{background:rgba(255,255,255,.92);border-bottom:1px solid #ffd9b4}
+body[data-theme="kids"] .brand b{color:#2b2356} body[data-theme="kids"] .brand small{color:#8b6b82}
+body[data-theme="kids"] .links button{color:#594b6d} body[data-theme="kids"] .links button:hover,body[data-theme="kids"] .links button.active{background:#ffe3ef;color:#2d2455}
+body[data-theme="kids"] .avatar{background:#fff0f6;border-color:#ffd0e2}
+body[data-theme="kids"] .hero{background:linear-gradient(90deg,#ffd98a 0%,#ffb7d1 22%,#7b7de8 48%,#5b67cf 50%,#7b7de8 52%,#b7eaff 78%,#75d5ff 100%);border-color:#fff}
+body[data-theme="kids"] .hero h1{font-size:51px} body[data-theme="kids"] .heroCenter:after{content:none}
+body[data-theme="kids"] .stat:nth-child(1){background:linear-gradient(135deg,#b99cff,#d0bcff)}
+body[data-theme="kids"] .stat:nth-child(2){background:linear-gradient(135deg,#ffb0a5,#ffd0a8)}
+body[data-theme="kids"] .stat:nth-child(3){background:linear-gradient(135deg,#8ed9f3,#b7ecff)}
+body[data-theme="kids"] .stat:nth-child(4){background:linear-gradient(135deg,#8fd9b8,#c1f0d7)}
+body[data-theme="kids"] .section .head h2{color:#31275b}
+body[data-theme="kids"] .card{background:rgba(255,255,255,.86);border-color:#eadcf3;color:#30264e}
+body[data-theme="kids"] .card p{color:#776a8b}
+
+body[data-theme="teens"]{--themeA:#32c7e8;--themeB:#5169e8;--themeC:#9a67ff;background:radial-gradient(circle at 50% -10%,#243b86 0,#0b1743 48%,#07102d 100%)}
+body[data-theme="teens"] .hero{background:linear-gradient(90deg,#46cde9 0%,#3266c5 24%,#1b286c 43%,#141b5d 50%,#1b286c 57%,#4d59c6 76%,#68d9f1 100%)}
+body[data-theme="teens"] .hero h1{font-size:48px} body[data-theme="teens"] .heroCenter:after{content:none}
+body[data-theme="teens"] .stat:nth-child(1){background:linear-gradient(135deg,#806ee0,#9a89ec)}
+body[data-theme="teens"] .stat:nth-child(2){background:linear-gradient(135deg,#df8c75,#f0aa90)}
+body[data-theme="teens"] .stat:nth-child(3){background:linear-gradient(135deg,#559fd1,#7cc3e7)}
+body[data-theme="teens"] .stat:nth-child(4){background:linear-gradient(135deg,#5bb28f,#83d0ac)}
+body[data-theme="teens"] .card{background:linear-gradient(145deg,#131e4e,#0b1438)}
+
+body[data-theme="senior"]{--themeA:#8b6cff;--themeB:#27d1dc;--themeC:#f1c75b;background:radial-gradient(circle at 50% -10%,#25246d 0,#090d2c 42%,#04071d 100%)}
+body[data-theme="senior"] .hero{background:linear-gradient(90deg,#5abfe4 0%,#3f62bd 20%,#20265f 42%,#111542 50%,#20265f 58%,#465eb5 80%,#6ad0ea 100%)}
+body[data-theme="senior"] .hero h1{font-size:46px;letter-spacing:-.3px} body[data-theme="senior"] .heroCenter:after{content:none}
+body[data-theme="senior"] .stat:nth-child(1){background:linear-gradient(135deg,#7561c9,#9582df)}
+body[data-theme="senior"] .stat:nth-child(2){background:linear-gradient(135deg,#bd806e,#d99b87)}
+body[data-theme="senior"] .stat:nth-child(3){background:linear-gradient(135deg,#4f89b8,#6caed4)}
+body[data-theme="senior"] .stat:nth-child(4){background:linear-gradient(135deg,#57967a,#75b998)}
+body[data-theme="senior"] .card{background:linear-gradient(145deg,#11183e,#090e2b)}
+
+
+.stageBadge{display:inline-flex;align-items:center;justify-content:center;min-width:145px;padding:7px 14px;border-radius:999px;margin-bottom:14px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);color:#fff;font-size:12px;font-weight:900;backdrop-filter:blur(10px);box-shadow:0 8px 22px #0002}
+body[data-theme="kids"] .stageBadge{background:#fff;color:#7a3b67;border-color:#ffd2e3;box-shadow:0 8px 22px #ff79a833}
+body[data-theme="teens"] .stageBadge{background:#0e255b;color:#8fefff;border-color:#4ac9e8}
+body[data-theme="senior"] .stageBadge{background:#111936;color:#e6dbff;border-color:#8f7cff}
+body[data-theme="kids"] .character{width:285px;filter:drop-shadow(0 22px 22px #6b477555)}
+body[data-theme="teens"] .character{width:300px;filter:drop-shadow(0 24px 24px #02051d99)}
+body[data-theme="senior"] .character{width:300px;filter:drop-shadow(0 24px 24px #02051dcc)}
+body[data-theme="kids"] .hero{min-height:540px}
+body[data-theme="kids"] .hero:after{background:#ff8dbf25}
+body[data-theme="teens"] .hero:after{background:#20cce02b}
+body[data-theme="senior"] .hero:after{background:#8c74ff20}
+body[data-theme="kids"] .hero p{font-size:18px}
+body[data-theme="senior"] .hero p{max-width:700px;color:#d9def4}
+body[data-theme="senior"] .statIcon{background:rgba(255,255,255,.10);border-color:#ffffff18}
+body[data-theme="senior"] .stat b{letter-spacing:.2px}
+body[data-theme="kids"] .stat{border-color:#ffffffaa}
+body[data-theme="kids"] .statIcon{background:#ffffff55;border-color:#ffffff88}
+body[data-theme="teens"] .statIcon{background:#ffffff12;border-color:#ffffff1f}
+.themePicker{display:none!important}
+.themePicker button{padding:10px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:#151b47;color:#e8ebff;font-weight:900;box-shadow:0 8px 18px #0002}
+.themePicker button.active{outline:2px solid #fff;transform:translateY(-1px)}
+body[data-theme="kids"] .themePicker button{background:#fff;color:#43355e;border-color:#ead7e9}
+body[data-theme="kids"] .themePicker button.active{outline-color:#ff78a8}
+body[data-theme="teens"] .themePicker button.active{outline-color:#58d9ef}
+body[data-theme="senior"] .themePicker button.active{outline-color:#a999ff}
+.gradeHint{display:none!important;text-align:center;font-size:12px;color:#9ca6c9;font-weight:800;margin-top:6px}
+body[data-theme="kids"] .gradeHint{display:none!important;color:#8c7180}
+@media(max-width:650px){body[data-theme="kids"] .hero h1{font-size:34px}body[data-theme="teens"] .hero h1,body[data-theme="senior"] .hero h1{font-size:33px}}
+
+
+/* === Screenshot-inspired stage frontend: HTML/CSS components, not a flat screenshot === */
+.stageHome{width:min(1450px,96%);margin:0 auto;border-radius:0 0 34px 34px;min-height:790px;padding:18px 22px 22px;overflow:hidden;position:relative;background:linear-gradient(180deg,#f5faff 0%,#eef8ff 58%,#f9f5ff 100%);border:4px solid #fff;box-shadow:0 25px 70px #1b3b7222;color:#0d1c4c}
+.stageHome:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 10% 12%,#dff5ff 0 12%,transparent 28%),radial-gradient(circle at 88% 14%,#efe6ff 0 12%,transparent 28%),radial-gradient(circle at 50% 90%,#e8fbff 0 10%,transparent 30%);pointer-events:none}.stageHome .glowA,.stageHome .glowB{position:absolute;border-radius:50%;filter:blur(25px);opacity:.45}.glowA{width:250px;height:250px;left:-80px;top:180px;background:#66e0c655}.glowB{width:280px;height:280px;right:-90px;bottom:80px;background:#b47aff55}
+.stageIntro{position:relative;z-index:2;text-align:center;padding:0 10px 20px}.stageEyebrow{font-size:16px;font-weight:900;letter-spacing:.5px;color:#10266a;margin-bottom:5px}.stageIntro h1{margin:0;font-size:50px;line-height:1.2;font-weight:900;color:#0a1644}.stageIntro h1 span{color:#1776ee}.stageIntro p{margin:8px 0 0;color:#516587;font-size:17px;font-weight:700}.stageIntro p b{color:#1782e8;margin:0 5px}
+.stageCards{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}.stageCard{border-radius:25px;overflow:hidden;border:2px solid rgba(255,255,255,.95);box-shadow:0 18px 45px #18376d20;transition:transform .25s,box-shadow .25s;position:relative}.stageCard:hover,.stageCard.selected{transform:translateY(-5px);box-shadow:0 24px 55px #18376d35}.stageCard.selected{outline:3px solid #ffffffaa}.stage1{background:linear-gradient(180deg,#fff8d7,#f7fff4)}.stage2{background:linear-gradient(180deg,#e7f8ff,#eef4ff)}.stage3{background:linear-gradient(180deg,#eee9ff,#fbf5ff)}
+.stageArt{height:360px;position:relative;overflow:hidden}.stage1 .stageArt{background:linear-gradient(145deg,#ffe66e,#ffb6c9 42%,#6fd9ff 100%)}.stage2 .stageArt{background:linear-gradient(145deg,#26cfe9,#316bd0 50%,#5261df)}.stage3 .stageArt{background:linear-gradient(145deg,#222b70,#4a3b9f 50%,#bd7bdf)}.stageArt:after{content:"";position:absolute;inset:auto 0 0;height:90px;background:linear-gradient(transparent,rgba(255,255,255,.9));z-index:2}.artDecor{position:absolute;top:10px;left:8px;right:8px;text-align:center;font-size:38px;letter-spacing:14px;z-index:1}.stagePerson{position:absolute;bottom:-8px;z-index:3;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 15px 13px #10204a38);animation:stageFloat 4.5s ease-in-out infinite}.personBoy{left:-3px;width:58%;max-height:335px}.personGirl{right:-3px;width:58%;max-height:335px;animation-delay:-2.2s}.stageNumber{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);width:76px;height:76px;border-radius:50%;display:grid;place-items:center;font-size:38px;font-weight:900;color:#fff;border:5px solid #fff;z-index:6;box-shadow:0 10px 25px #18376d33}.stage1 .stageNumber{background:#21bd72}.stage2 .stageNumber{background:#2788ee}.stage3 .stageNumber{background:#743fe5}@keyframes stageFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.stageBody{text-align:center;padding:15px 14px 18px;min-height:290px}.stageBody h2{margin:0 0 1px;font-size:29px;font-weight:900}.stageBody>strong{font-size:17px}.stageBody>p{font-size:14px;font-weight:900;margin:9px 0 12px}.stage1 .stageBody h2,.stage1 .stageBody>strong,.stage1 .stageBody>p{color:#16734c}.stage2 .stageBody h2,.stage2 .stageBody>strong,.stage2 .stageBody>p{color:#1755bc}.stage3 .stageBody h2,.stage3 .stageBody>strong,.stage3 .stageBody>p{color:#5b31b7}.featureRow{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:0 0 16px}.featureRow span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:25px;background:#ffffff9c;border-radius:15px;min-height:72px;border:1px solid #ffffffcc}.featureRow small{font-size:9px;font-weight:900;color:#20305a;line-height:1.25}.stageBody button{width:100%;border:0;border-radius:18px;padding:13px 10px;color:#fff;font-size:15px;font-weight:900;box-shadow:0 10px 22px #18376d22}.stage1 .stageBody button{background:linear-gradient(90deg,#16ae6b,#1dc47b)}.stage2 .stageBody button{background:linear-gradient(90deg,#1689ee,#2c74e9)}.stage3 .stageBody button{background:linear-gradient(90deg,#6935df,#8139e8)}.stageBody button b{margin-right:8px;font-size:20px}
+
+.stage1 .stageArt:before{background:radial-gradient(circle at 50% 17%,#fff 0 5%,transparent 5.5%),radial-gradient(circle at 12% 24%,#fff9 0 5%,transparent 5.5%),radial-gradient(circle at 87% 20%,#fff9 0 4%,transparent 4.5%),linear-gradient(180deg,transparent 0 62%,#74d98a55 62% 100%);}
+.stage2 .stageArt:before{background:radial-gradient(circle at 50% 18%,#fff9 0 4%,transparent 4.5%),radial-gradient(circle at 12% 26%,#fff8 0 4%,transparent 4.5%),radial-gradient(circle at 88% 25%,#fff8 0 5%,transparent 5.5%),linear-gradient(180deg,transparent 0 62%,#a7eaff25 62% 100%);}
+.stage3 .stageArt:before{background:radial-gradient(circle at 50% 18%,#fff9 0 3%,transparent 3.5%),radial-gradient(circle at 10% 28%,#fff8 0 4%,transparent 4.5%),radial-gradient(circle at 90% 22%,#fff8 0 4%,transparent 4.5%),linear-gradient(180deg,transparent 0 62%,#d6b9ff22 62% 100%);}
+.stage1 .stageBody,.stage2 .stageBody,.stage3 .stageBody{min-height:300px}
+@media(max-width:950px){.stageCards{grid-template-columns:1fr}.stageCard{max-width:620px;width:100%;margin:auto}.stageHome{min-height:auto}.stageIntro h1{font-size:36px}}@media(max-width:650px){.stageHome{padding:22px 9px 16px}.stageIntro h1{font-size:30px}.stageIntro p{font-size:13px}.stageEyebrow{font-size:10px;letter-spacing:1px}.stageArt{height:285px}.stageBody{min-height:0}.featureRow small{font-size:8px}}
+
+/* === Final reference-style stage frontend === */
+.stageHome{min-height:760px;padding-top:24px;background:linear-gradient(180deg,#f5fbff 0%,#edf8ff 56%,#fff6ff 100%)}
+.stageIntro{padding-bottom:20px}
+.stageEyebrow{font-size:15px;letter-spacing:1.5px;color:#132b70}
+.stageIntro h1{font-size:48px;line-height:1.18}
+.stageIntro h1 span{color:#176ff0}
+.stageIntro p{font-size:17px;color:#526789}
+.stageSlogan{position:absolute;top:38px;font-weight:900;font-size:17px;line-height:1.45;color:#1457c7;z-index:3;transform:rotate(-4deg);text-align:center}
+.sloganLeft{left:26px}.sloganRight{right:24px;transform:rotate(4deg)}
+.stageCards{gap:16px}
+.stageCard{border-radius:25px}
+.stageArt{height:335px}
+.stageArt:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(circle at 20% 20%,#fff9 0 3%,transparent 4%),radial-gradient(circle at 80% 25%,#fff8 0 2%,transparent 3%),radial-gradient(circle at 50% 8%,#fff7 0 1.5%,transparent 2%)}
+.artDecor{font-size:37px;letter-spacing:18px;top:10px;text-shadow:0 5px 14px #18376d33;filter:saturate(1.25);z-index:4}
+.stage1 .artDecor{font-size:50px;letter-spacing:15px}.stage2 .artDecor{font-size:46px;letter-spacing:13px}.stage3 .artDecor{font-size:48px;letter-spacing:13px}
+.stagePerson{z-index:3;bottom:-10px;max-height:315px;transition:transform .35s ease,filter .35s ease}
+.personBoy{left:0;width:44%;max-height:305px}.personGirl{right:0;width:44%;max-height:305px}
+.stageCard{cursor:pointer}.stageCard:hover .personBoy{transform:translateX(-3px) translateY(-5px) rotate(-1deg)}
+.stageCard:hover .personGirl{transform:translateX(3px) translateY(-5px) rotate(1deg)}
+.stage1 .stagePerson{max-height:285px}.stage1 .personBoy{width:43%;left:2px}.stage1 .personGirl{width:43%;right:2px}
+.stage2 .stagePerson{max-height:300px}.stage2 .personBoy,.stage2 .personGirl{width:44%}
+.stage3 .stagePerson{max-height:310px}.stage3 .personBoy,.stage3 .personGirl{width:44%}
+.stageNumber{bottom:18px;width:78px;height:78px;font-size:39px}
+.stageBody{min-height:285px;padding-top:15px}
+.stageBody h2{font-size:30px}
+.stageBody>strong{font-size:18px}
+.stageBody>p{font-size:14px}
+.stageBody>p{color:#0b63d8!important;text-shadow:0 1px 8px rgba(11,99,216,.18)}
+.featureRow span{font-size:30px;min-height:78px;background:#ffffffb8}
+.featureRow small{font-size:9px}
+.stage1 .stageArt{background:linear-gradient(145deg,#ffe85e 0%,#ffd18b 28%,#ffb9cf 55%,#7cddff 100%)}
+.stage1 .stageBody{background:linear-gradient(180deg,#fffbe8,#f5fff4)}
+.stage2 .stageArt{background:linear-gradient(145deg,#22cde8 0%,#2476d8 48%,#5b5de0 100%)}
+.stage2 .stageBody{background:linear-gradient(180deg,#effcff,#eef2ff)}
+.stage3 .stageArt{background:linear-gradient(145deg,#26347e 0%,#4b3ba1 48%,#b65fd8 100%)}
+.stage3 .stageBody{background:linear-gradient(180deg,#f2edff,#fff7ff)}
+@media(max-width:950px){.stageSlogan{display:none}.stageIntro h1{font-size:38px}.stageArt{height:320px}}
+@media(max-width:650px){.stageIntro h1{font-size:30px}.stageArt{height:290px}.personBoy,.personGirl{width:45%!important}.artDecor{font-size:28px!important;letter-spacing:8px}}
+
+/* ===== Supplied-reference visual frontend ===== */
+.refLogo{width:278px;height:67px;object-fit:contain;display:block}
+.brand{margin-left:auto;display:flex;align-items:center}
+.stageHome{width:100%;max-width:none;margin:0;border:0;border-radius:0;min-height:0;padding:18px 28px 0;background:linear-gradient(180deg,#e9f7ff 0%,#edf9ff 48%,#f8f6ff 100%);box-shadow:none;overflow:hidden}
+.stageHome:before{content:"";inset:0;position:absolute;pointer-events:none;background:none}
+.stageHome:after{display:none}
+.stageIntro{padding:0 300px 16px;min-height:165px}
+.stageEyebrow{font-size:16px;color:#12285f;margin-top:2px}
+.stageIntro h1{font-size:52px;color:#09205c;white-space:nowrap}
+.stageIntro h1 span{color:#0b6eea}
+.stageIntro p{font-size:17px;color:#234b88;margin-top:10px}
+.stageSlogan{top:36px;font-size:18px;color:#1249a7}
+.sloganLeft{left:38px}.sloganRight{right:38px}
+.stageCards{gap:16px;max-width:1480px;margin:0 auto}
+.stageCard{border-radius:25px;border:2px solid #fff;box-shadow:0 12px 30px rgba(25,63,120,.18)}
+.referenceArt{height:338px!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;position:relative}
+.referenceArtShade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 70%,rgba(255,255,255,.04));pointer-events:none}
+.referenceArt + .stageBody{margin-top:0}
+.visuallyHidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.stageBody{min-height:292px;padding:11px 14px 18px}
+.stageBody>strong{font-size:18px;color:#132c67!important}
+.stageBody>p{font-size:14px;color:#0b63d8!important;margin:8px 0 12px}
+.stage1 .stageBody{background:linear-gradient(180deg,#fffdf0,#f2fff5)}
+.stage2 .stageBody{background:linear-gradient(180deg,#effcff,#eef4ff)}
+.stage3 .stageBody{background:linear-gradient(180deg,#f2edff,#fff7ff)}
+.featureRow{gap:5px;margin-bottom:14px}
+.featureRow span{min-height:73px;font-size:29px;border-color:#ffffffd9;background:#ffffffb5}
+.featureRow small{font-size:9px;color:#20305a}
+.stageBody button{border-radius:18px;height:54px;font-size:16px}
+.referenceFeatures{width:min(1450px,100%);margin:20px auto 0;padding:16px 12px 22px;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,255,255,.82);border-top:1px solid #d7e8fa}
+.referenceFeature{display:flex;align-items:center;justify-content:center;gap:12px;min-height:72px;border-left:1px solid #d6e3f1;text-align:right}
+.referenceFeature:last-child{border-left:0}
+.rfIcon{font-size:35px;line-height:1}
+.referenceFeature b{display:block;color:#10245c;font-size:15px}
+.referenceFeature small{display:block;color:#6a7895;font-size:11px;margin-top:4px}
+.stats{display:none}
+@media(max-width:1050px){.stageIntro{padding:0 120px 16px}.stageIntro h1{font-size:42px}.stageSlogan{display:none}.referenceFeatures{grid-template-columns:repeat(2,1fr)}.referenceFeature:nth-child(2){border-left:0}}
+@media(max-width:650px){.refLogo{width:205px;height:52px}.stageHome{padding:10px 8px 0}.stageHome:before{opacity:.55;background-size:auto}.stageIntro{padding:0 8px 14px;min-height:125px}.stageEyebrow{font-size:11px}.stageIntro h1{font-size:28px;white-space:normal}.stageIntro p{font-size:12px}.referenceArt{height:285px!important}.referenceFeatures{grid-template-columns:1fr 1fr;padding:8px}.referenceFeature{border-left:0;border-bottom:1px solid #d6e3f1}}
+
+
+/* Updated age-progressed stage artwork */
+.referenceArt{height:338px!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;position:relative;overflow:hidden}
+.referenceArtShade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 72%,rgba(255,255,255,.04));pointer-events:none}
+
+
+/* V3 interactive feature buttons and compact stage cards */
+.referenceFeature{position:relative;width:100%;border:0;border-left:1px solid #d6e3f1;background:transparent;font:inherit;color:inherit;cursor:pointer;text-align:right;padding:10px 14px;transition:transform .18s,background .18s,box-shadow .18s}
+.referenceFeature:hover{background:#f7fbff;transform:translateY(-2px);box-shadow:0 10px 24px rgba(25,63,120,.08)}
+.referenceFeature:focus-visible{outline:3px solid #4d8dff;outline-offset:-3px}
+.referenceFeature .rfArrow{margin-right:auto;color:#4a68a5;font-size:20px;font-weight:900}
+.featurePage{min-height:60vh}
+.featureDashboard{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+.featurePanel,.progressCard{background:#fff;border:1px solid #dce8f6;border-radius:22px;padding:22px;box-shadow:0 15px 38px rgba(25,63,120,.10)}
+.bigFeatureIcon{font-size:42px}.featurePanel h3{color:#14265e;margin:10px 0 8px}.featurePanel p{color:#63718f;line-height:1.9;min-height:76px}.featureAction{border:0;border-radius:13px;padding:12px 16px;background:linear-gradient(90deg,#6242e8,#1bbbd0);color:#fff;font-weight:900;cursor:pointer}.featureAction:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.progressDashboard{display:grid;gap:18px;margin-top:20px}.progressHero{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;background:linear-gradient(135deg,#111936,#243c7b);color:#fff;border-radius:24px;padding:22px}.progressHero>div{background:#ffffff12;border:1px solid #ffffff1a;border-radius:16px;padding:16px}.progressHero strong{display:block;font-size:32px;margin:6px 0}.progressLabel{font-size:12px;color:#c9d3f1}.progressTrack{height:18px;background:#e8edf7;border-radius:99px;overflow:hidden;margin:16px 0 10px}.progressFill{height:100%;width:0;background:linear-gradient(90deg,#6242e8,#1bbbd0);border-radius:99px;transition:width .4s}.progressCard p{color:#66738e}.progressStats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.progressStats article{background:#fff;border:1px solid #dce8f6;border-radius:18px;padding:18px;text-align:center}.progressStats b{display:block;font-size:28px;color:#203d88}.progressStats span{color:#687694;font-size:13px}.wideAction{justify-self:center}
+@media(max-width:800px){.featureDashboard{grid-template-columns:1fr}.progressHero,.progressStats{grid-template-columns:1fr 1fr}.progressHero>div:last-child{grid-column:1/-1}.referenceFeatures{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.stageArt.referenceArt{height:115px!important}.stageBody{min-height:0!important;padding:8px 10px 11px}.stageBody>strong{font-size:14px}.stageBody>p{font-size:11px;margin:4px 0 7px}.featureRow{gap:3px;margin-bottom:7px}.featureRow span{min-height:42px;font-size:17px;padding:4px}.featureRow small{font-size:7px}.stageBody button{height:34px;border-radius:12px;font-size:11px}.stageCard{border-radius:17px}.referenceFeature{min-height:78px;padding:8px}.referenceFeature b{font-size:13px}.referenceFeature small{font-size:9px}.rfIcon{font-size:27px}.rfArrow{font-size:16px!important}.progressHero,.progressStats{grid-template-columns:1fr}.progressHero>div:last-child{grid-column:auto}}
+
+.authModal{position:fixed;inset:0;background:rgba(7,10,35,.72);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:9999;padding:18px}
+.authBox{width:min(470px,100%);background:#fff;border-radius:26px;padding:26px;box-shadow:0 25px 80px #0008;color:#17245b;position:relative}
+.authClose{position:absolute;top:12px;left:12px;border:0;background:#eef2ff;color:#39456d;width:38px;height:38px;border-radius:12px;font-size:20px;cursor:pointer}
+.authTabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#f1f4ff;padding:5px;border-radius:14px;margin:18px 0}
+.authTab{border:0;background:transparent;padding:11px;border-radius:10px;font-weight:900;color:#657096;cursor:pointer}
+.authTab.active{background:#fff;color:#4f35d9;box-shadow:0 4px 14px #26347a16}
+.authMethod{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.authMethod button{border:1px solid #d7def5;background:#f8f9ff;padding:12px;border-radius:13px;font-weight:900;color:#405078;cursor:pointer}
+.authMethod button.active{border-color:#6846e8;background:#f0ebff;color:#4d2dcc}
+.authField{width:100%;box-sizing:border-box;border:1px solid #d5dcf1;background:#fbfcff;color:#17245b;padding:13px 14px;border-radius:13px;font:inherit;margin:7px 0}
+.authAction{width:100%;border:0;background:linear-gradient(90deg,#6242e8,#1bbbd0);color:#fff;padding:14px;border-radius:13px;font-weight:900;font-size:15px;cursor:pointer;margin-top:8px}
+.authNote{font-size:12px;color:#6c789a;line-height:1.8;margin-top:12px}
+.authStatus{min-height:22px;margin-top:8px;color:#4d5d86;font-size:12px;font-weight:800}
+@media(max-width:520px){.authBox{padding:22px}.authMethod{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="navin">
+<div class="brand"><img class="refLogo" src="assets/quiz-champion-logo.png" alt="Quiz Champion"></div>
+<nav class="links"><button class="active" onclick="home()">سەرەتا</button><button onclick="guard('quizSec')">🧠 کویز</button><button onclick="guard('booksSec');renderBooks()">📚 کتێب</button><button onclick="guardPage('leaderboard')">🏆 پلەبەندی</button><button onclick="showPage('rewards')">🎁 خەڵات</button><button onclick="showPage('payment')">💳 پارەدان</button></nav>
+<div class="user"><button class="avatar" aria-label="گەڕان">⌕</button><button class="login" style="background:#eaf2ff;color:#116de2;box-shadow:none" onclick="openAuth('login')">چوونە ژوورەوە</button><button class="login" onclick="openAuth('signup')">هەژمار دروست بکە</button><span style="font-weight:900;color:#17245b;white-space:nowrap">🌐 کوردی⌄</span></div>
+</div></header>
+<div class="themePicker" aria-label="هەڵبژاردنی ڕوکار"><button id="themeKids" onclick="setTheme('kids')">🟢 بازنەی ١ — پۆلی ١–٣</button><button id="themeTeens" onclick="setTheme('teens')">🔵 بازنەی ٢ — پۆلی ٤–٩</button><button id="themeSenior" onclick="setTheme('senior')">🟣 بازنەی ٣ — پۆلی ١٠–١٢</button></div><div class="gradeHint" id="themeHint" aria-hidden="true"></div>
+
+
+<div class="authModal" id="authModal" role="dialog" aria-modal="true" aria-label="چوونەژوورەوە و خۆتۆمارکردن">
+  <div class="authBox">
+    <button class="authClose" onclick="closeAuth()" aria-label="داخستن">×</button>
+    <h2 id="authTitle" style="margin:4px 0 0;text-align:center">چوونەژوورەوە</h2>
+    <p style="text-align:center;color:#697595;margin:7px 0">بە ئیمەیڵ یان ژمارەی مۆبایل</p>
+    <div class="authTabs"><button id="authLoginTab" class="authTab active" onclick="setAuthMode('login')">چوونەژوورەوە</button><button id="authSignupTab" class="authTab" onclick="setAuthMode('signup')">خۆتۆمارکردن</button></div>
+    <div class="authMethod"><button id="emailMethod" class="active" onclick="setAuthMethod('email')">📧 ئیمەیڵ</button><button id="phoneMethod" onclick="setAuthMethod('phone')">📱 مۆبایل</button></div>
+    <input id="authContact" class="authField" placeholder="ئیمەیڵەکەت بنووسە" autocomplete="email">
+    <input id="authOtp" class="authField" placeholder="کۆدی پشتڕاستکردنەوە" inputmode="numeric" autocomplete="one-time-code" style="display:none">
+    <button id="authSend" class="authAction" onclick="sendAuthCode()">بەردەوام بە بە ئیمەیڵ</button>
+    <button id="authVerify" class="authAction" onclick="verifyAuthCode()" style="display:none">پشتڕاستکردنەوە و چوونەژوورەوە</button>
+    <div id="authStatus" class="authStatus"></div>
+    <div class="authNote">لە ئێستادا هیچ پارەدانێک پێویست نییە؛ دوای چوونەژوورەوە دەستگەیشتن بە کویز و بەشەکان بۆ تاقیکردنەوە کراوەیە.</div>
+  </div>
+</div>
+
+<main id="home">
+<section class="hero stageHome">
+  <div class="heroGlow glowA"></div><div class="heroGlow glowB"></div>
+  <div class="stageIntro">
+    <div class="stageEyebrow">پلاتفۆرمی فێربوون و خەڵات</div>
+    <h1>فێربە، پێشبڕکێ بکە، <span>خەڵات ببە</span></h1>
+    <p>کویزە کارلێکەرەکان <b>•</b> شوێنکەوتنی پێشکەوتن <b>•</b> خەڵات و خاڵ <b>•</b> داهاتوویەکی ڕوونتر</p>
+    <div class="stageSlogan sloganLeft">هەنگاو بە هەنگاو<br>بەرەو داهاتوو! ✨</div><div class="stageSlogan sloganRight">زانیاری زیاتر<br>توانای زیاتر! 🚀</div>
+  </div>
+  <div class="stageCards">
+    <article class="stageCard stage1" data-stage="kids" role="button" tabindex="0" onclick="goStage(event,'kids')" onkeydown="if(event.key==='Enter'||event.key===' ')goStage(event,'kids')"><div class="stageArt referenceArt" style="background-image:url('assets/stage1-art.png')" role="img" aria-label="بازنەی ١"><div class="referenceArtShade"></div></div><div class="stageBody"><h2 class="visuallyHidden">بازنەی ١</h2><strong>پۆلی ١–٣</strong><p>یاری بکە • فێربە • گەشە بکە • پێشکەوتن بکە</p><div class="featureRow"><span>🎮<small>کویزە شادەکان</small></span><span>🧩<small>تواناکان</small></span><span>⭐<small>خەڵات</small></span><span>🚀<small>پێشکەوتن</small></span></div><button onclick="event.stopPropagation();setTheme('kids');guard('quizSec')">بۆ بازنەی ١ بڕۆ <b>←</b></button></div></article>
+    <article class="stageCard stage2" data-stage="teens" role="button" tabindex="0" onclick="goStage(event,'teens')" onkeydown="if(event.key==='Enter'||event.key===' ')goStage(event,'teens')"><div class="stageArt referenceArt" style="background-image:url('assets/stage2-art.png')" role="img" aria-label="بازنەی ٢"><div class="referenceArtShade"></div></div><div class="stageBody"><h2 class="visuallyHidden">بازنەی ٢</h2><strong>پۆلی ٤–٩</strong><p>چالاک بە • باشتر بە • پێشبڕکێ بکە • سەرکەوتوو بە</p><div class="featureRow"><span>🧪<small>بابەت و کویز</small></span><span>📊<small>پێشکەوتن</small></span><span>🏆<small>پێشبڕکێ</small></span><span>🎯<small>ئامانج</small></span></div><button onclick="event.stopPropagation();setTheme('teens');guard('quizSec')">بۆ بازنەی ٢ بڕۆ <b>←</b></button></div></article>
+    <article class="stageCard stage3" data-stage="senior" role="button" tabindex="0" onclick="goStage(event,'senior')" onkeydown="if(event.key==='Enter'||event.key===' ')goStage(event,'senior')"><div class="stageArt referenceArt" style="background-image:url('assets/stage3-art.png')" role="img" aria-label="بازنەی ٣"><div class="referenceArtShade"></div></div><div class="stageBody"><h2 class="visuallyHidden">بازنەی ٣</h2><strong>پۆلی ١٠–١٢</strong><p>قووڵتر بیر بکە • چارەسەر بکە • داهێنان بکە • پێشەنگ بە</p><div class="featureRow"><span>🧠<small>کویزی پێشکەوتوو</small></span><span>🧬<small>زانستی و تەکنەلۆژی</small></span><span>📊<small>ئامادەکاری</small></span><span>🎓<small>داهاتوو</small></span></div><button onclick="event.stopPropagation();setTheme('senior');guard('quizSec')">بۆ بازنەی ٣ بڕۆ <b>←</b></button></div></article>
+  </div>
+  <div class="referenceFeatures" aria-label="تایبەتمەندییە سەرەکییەکان">
+    <button type="button" class="referenceFeature" onclick="showPage('qualityFeature')" aria-label="ناوەڕۆکی باکیفیت"><div class="rfIcon">🛡️</div><div><b>ناوەڕۆکی باکیفیت</b><small>کویزەی پێوەست و ستاندارد</small></div><span class="rfArrow">←</span></button>
+    <button type="button" class="referenceFeature" onclick="showPage('growthFeature')" aria-label="ژینگەی پەرەسەندن"><div class="rfIcon">👥</div><div><b>ژینگەی پەرەسەندن</b><small>بۆ هەموو فێرخوازان</small></div><span class="rfArrow">←</span></button>
+    <button type="button" class="referenceFeature" onclick="showPage('rewards')" aria-label="خەڵات و پاداشت"><div class="rfIcon">🎁</div><div><b>خەڵات و پاداشت</b><small>خاڵ کۆبکەرەوە و خەڵات ببە</small></div><span class="rfArrow">←</span></button>
+    <button type="button" class="referenceFeature" onclick="showPage('progressFeature')" aria-label="شوێنی پێشکەوتن"><div class="rfIcon">📈</div><div><b>شوێنی پێشکەوتن</b><small>پێشکەوتنت بە وردی ببینە</small></div><span class="rfArrow">←</span></button>
+  </div>
+</section>
+<div class="stats">
+<button type="button" class="stat" onclick="guard('quizSec')" aria-label="پرسیاری بەردەست">
+<div class="statIcon" id="statIcon1">🧠</div><div><b id="qCount">—</b><span>پرسیاری بەردەست</span></div></button>
+<button type="button" class="stat" onclick="showHomeSection('booksSec')" aria-label="کتێب">
+<div class="statIcon" id="statIcon2">📖</div><div><b id="bookCount">—</b><span>کتێب</span></div></button>
+<button type="button" class="stat" onclick="guard('quizSec')" aria-label="خاڵ بەپێی ئاست">
+<div class="statIcon" id="statIcon3">🏅</div><div><b>٢–٤</b><span>خاڵ بەپێی ئاست</span></div></button>
+<button type="button" class="stat" onclick="showPage('rewards')" aria-label="خەڵات">
+<div class="statIcon" id="statIcon4">🎁</div><div><b id="rewardCount">—</b><span>خەڵات</span></div></button>
+</div>
+
+<section class="section" id="booksSec"><div class="head"><div><h2>📚 کتێبەکان</h2><p>کتێبێک هەڵبژێرە و بەشێک بۆ کویز دەستپێبکە.</p></div></div><div class="cards" id="bookCards"><div class="empty">کتێبەکان بار دەکرێن...</div></div></section>
+<section class="section" id="quizSec"><div class="head"><div><h2>🧠 بەشەکانی کویز</h2><p>هەر بەشێک ١٠٠ پرسیاری هەڵبژاردنەیی هەیە.</p></div></div><div class="cards" id="sectionCards"><div class="empty">بۆ کردنەوەی کتێب کتێبێک هەڵبژێرە.</div></div></section>
+</main>
+
+
+<section class="section specialPage featurePage" id="qualityFeature" style="display:none;padding-top:38px">
+  <div class="head"><div><h2>🛡️ ناوەڕۆکی باکیفیت</h2><p>فێربوون لەسەر بنەمای ناوەڕۆکی ڕێکخراو و کویزە پەیوەستەکان.</p></div><button class="back" onclick="home()">← سەرەتا</button></div>
+  <div class="featureDashboard">
+    <article class="featurePanel"><div class="bigFeatureIcon">📚</div><h3>کتێب → بەش → کویز</h3><p>هەر کتێب بە بەشەکان دابەش دەکرێت و پرسیارەکان بەپێی ناوەڕۆکی بابەت ڕێکدەخرێن.</p><button class="featureAction" onclick="showHomeSection('booksSec')">📖 بینینی کتێبەکان</button></article>
+    <article class="featurePanel"><div class="bigFeatureIcon">🧠</div><h3>کویزی هەڵبژاردنەیی</h3><p>فێرخواز دەتوانێت پرسیارەکان وەڵام بدات و ئەنجام و خاڵەکانی ببینێت.</p><button class="featureAction" onclick="guard('quizSec')">🚀 دەستپێکردنی کویز</button></article>
+    <article class="featurePanel"><div class="bigFeatureIcon">🎯</div><h3>ئامانجی فێربوون</h3><p>ئامانج ئەوەیە فێرخواز تەنها وەڵامی پرسیار نەدات، بەڵکو بەردەوام فێربێت و پێشبڕکێ بکات.</p><button class="featureAction" onclick="showPage('progressFeature')">📈 بینینی پێشکەوتن</button></article>
+  </div>
+</section>
+
+<section class="section specialPage featurePage" id="growthFeature" style="display:none;padding-top:38px">
+  <div class="head"><div><h2>👥 ژینگەی پەرەسەندن</h2><p>ژینگەیەکی یاری-فێرکاری بۆ پەرەپێدانی تواناکانی فێرخواز.</p></div><button class="back" onclick="home()">← سەرەتا</button></div>
+  <div class="featureDashboard growthGrid">
+    <article class="featurePanel"><div class="bigFeatureIcon">🧩</div><h3>فێربە</h3><p>کتێب و بابەتەکان بخوێنەوە و پاشان لە هەمان بابەت کویز بکە.</p><button class="featureAction" onclick="showHomeSection('booksSec')">📚 بڕۆ بۆ کتێبەکان</button></article>
+    <article class="featurePanel"><div class="bigFeatureIcon">🏆</div><h3>پێشبڕکێ بکە</h3><p>بە خاڵ و پلەبەندی هەست بە پێشبڕکێ بکە و هەوڵ بدە بەرزتر ببیت.</p><button class="featureAction" onclick="showPage('leaderboard')">🏆 بینینی پلەبەندی</button></article>
+    <article class="featurePanel"><div class="bigFeatureIcon">🚀</div><h3>پەرەسەندن</h3><p>لەگەڵ هەر کویزێک ئەنجامەکانت زیاد دەبن و دەتوانیت بۆ ئاستی داهاتوو بڕۆیت.</p><button class="featureAction" onclick="showPage('progressFeature')">📈 شوێنکەوتنی پێشکەوتن</button></article>
+  </div>
+</section>
+
+<section class="section specialPage featurePage" id="progressFeature" style="display:none;padding-top:38px">
+  <div class="head"><div><h2>📈 شوێنی پێشکەوتن</h2><p>پێشکەوتنی خۆت ببینە و بزانە بۆ ئاستی داهاتوو چەند ماوە.</p></div><button class="back" onclick="home()">← سەرەتا</button></div>
+  <div class="progressDashboard">
+    <article class="progressHero"><div><span class="progressLabel">خاڵی ئێستا</span><strong id="progressPoints">٠</strong><span>خاڵ</span></div><div><span class="progressLabel">ئاست</span><strong id="progressLevel">١</strong></div><div><span class="progressLabel">شوێن لە پلەبەندی</span><strong id="progressRank">—</strong></div></article>
+    <article class="progressCard"><h3>🎯 بەرەو ئاستی داهاتوو</h3><div class="progressTrack"><div id="progressBarFeature" class="progressFill"></div></div><p id="progressTextFeature">لە ٠ تا ١٠٠ خاڵی ئاستی داهاتوو.</p></article>
+    <div class="progressStats"><article><b id="progressQuizCount">٠</b><span>کویزی تەواوکراو</span></article><article><b id="progressCorrectRate">—</b><span>ڕێژەی وەڵامی ڕاست</span></article><article><b id="progressNextReward">٥٠٠</b><span>خاڵ بۆ نزیکترین خەڵات</span></article></div>
+    <button class="featureAction wideAction" onclick="showPage('rewards')">🎁 بینینی هەموو خەڵاتەکان</button>
+  </div>
+</section>
+
+<section class="section specialPage" id="leaderboard" style="display:none;padding-top:38px">
+  <div class="head"><div><h2>🏆 پلەبەندی</h2><p>باشترین بەشداربووان و کۆی خاڵەکانیان</p></div><button class="back" onclick="home()">← سەرەتا</button></div>
+  <div class="cards" id="leaderboardCards"><div class="empty">داتاکان بار دەکرێن...</div></div>
+</section>
+<section class="section specialPage" id="rewards" style="display:none;padding-top:38px">
+  <div class="head"><div><h2>🎁 خەڵاتەکان</h2><p>خەڵاتەکان بۆ پێشەنگەکانی Quiz Champion</p></div><button class="back" onclick="home()">← سەرەتا</button></div>
+  <div class="cards" id="rewardCards"><div class="empty">خەڵاتەکان بار دەکرێن...</div></div>
+</section>
+
+<section class="paymentPage specialPage" id="payment" style="display:none;padding-top:38px">
+  <div class="head">
+    <div><h2>💳 چالاککردنی هەژمار</h2><p>پارەدان بکە بۆ کردنەوەی هەموو بەشەکانی Quiz Champion</p></div>
+    <button class="back" onclick="home()">← سەرەتا</button>
+  </div>
+  <div class="paymentBox">
+    <div id="paymentStatus" class="paymentStatus free">هەژمارەکەت هێشتا چالاک نەکراوە. دەتوانیت ڕووکاری سایت و خەڵاتەکان ببینیت، بەڵام کویز و بەشە تایبەتەکان قفلن.</div>
+    <h3>یەکێک لەم ڕێگایانە هەڵبژێرە</h3>
+    <div class="paymentMethods">
+      <button class="payMethod active" onclick="selectPayment('asiapay',this)">AsiaPay</button>
+      <button class="payMethod" onclick="selectPayment('zeincash',this)">Zain Cash</button>
+      <button class="payMethod" onclick="selectPayment('fib',this)">FIB</button>
+    </div>
+    <div id="payInstructions" class="payInfo">لە AsiaPay ـەوە «پارەدان بکە» دابگرە؛ دواتر بۆ پەڕەی پارەدانی AsiaPay دەچیت و پارەدان تەواو دەکەیت. هەژمارەکەت دوای پشتڕاستبوونەوەی خۆکار چالاک دەبێت.</div>
+    <div class="paymentForm">
+      <input id="paymentRef" class="wide" placeholder="ژمارەی مامەڵە / Transaction ID" style="display:none">
+      <input id="paymentName" placeholder="ناوی تەواو" style="display:none">
+      <input id="paymentEmail" placeholder="ئیمەیڵ" style="display:none">
+      <button id="asiaPayButton" class="paymentSubmit wide" onclick="startAsiaPay()">💳 پارەدان بە AsiaPay — ١,٠٠٠ د.ع</button>
+      <button id="manualPayButton" class="paymentSubmit wide" onclick="submitPayment()" style="display:none">ناردنی داواکاری پارەدان</button>
+    </div>
+  </div>
+</section>
+
+<section class="quiz" id="quiz"><div class="quizTop"><div><b id="qTitle">کویز</b><div id="qSub" style="color:#8a91aa;font-size:12px"></div></div><button class="back" onclick="home()">← گەڕانەوە</button></div>
+<div class="progress"><div class="bar" id="bar"></div></div><div class="qcard"><div class="qmeta"><span class="pill" id="difficulty">ئاسان</span><span class="pill" id="points">٢ خاڵ</span><span class="pill" id="qNum">١ / ١٠</span></div><h2 id="question">...</h2><div class="opts" id="options"></div><div class="answerFeedback" id="answerFeedback"></div><div id="nextHint" style="display:none;margin-top:10px;text-align:center;color:#aeb6d8;font-size:12px;font-weight:800">کاتێک ئەنجامەکەت بینی، خۆت دوگمەی «دواتر» دابگرە.</div><div class="quizNav"><button class="navBtn" onclick="prevQ()">پێشوو</button><button class="navBtn next" onclick="nextQ()">دواتر →</button></div></div></section>
+<section class="result" id="result"><div class="resultCard"><div style="font-size:65px">🏆</div><h2>کویزەکە تەواو بوو!</h2><div class="score" id="score">0</div><p id="resultText"></p><button class="go" onclick="home()">گەڕانەوە بۆ سەرەتا</button></div></section>
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL="https://yymtqsxwcnkstoolvdor.supabase.co";
+const SUPABASE_KEY="sb_publishable_dD6SuCHnU8wzvrEArMa35A_sZF8rWB4";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let books=[],sections=[],questions=[],allQuestions=[],current=0,answers={},answered={};
+
+const ku=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+async function load(){
+  const BIOLOGY_BOOK={
+    id:"eea2fc70-3b8c-4920-9b43-494bbc15f728",
+    title:"زیندەزانی پۆلی ١٢",
+    subject:"Biology",
+    edition_year:2022,
+    grade_level:12,
+    active:true
+  };
+
+  // Show the uploaded Biology textbook immediately; never leave the Books
+  // section stuck on "بار دەکرێن..." while another request is pending.
+  books=[BIOLOGY_BOOK];
+  renderBooks();
+  document.getElementById("bookCount").textContent=ku(1);
+
+  // Load each data source independently so one slow request cannot block the UI.
+  db.from("academic_books").select("*").eq("active",true).order("grade_level")
+    .then(({data,error})=>{
+      if(!error && data && data.length){
+        books=data;
+        renderBooks();
+        document.getElementById("bookCount").textContent=ku(data.length);
+      }
+    }).catch(()=>{});
+
+  db.from("academic_sections").select("*").eq("active",true).order("sort_order")
+    .then(({data,error})=>{
+      if(!error && data){
+        sections=data;
+        renderSections();
+      }
+    }).catch(()=>{});
+
+  db.from("question_bank").select("*").eq("active",true).eq("source_verified",true).order("created_at")
+    .then(({data,error})=>{
+      if(!error && data){
+        allQuestions=data;
+        questions=allQuestions.slice();
+        document.getElementById("qCount").textContent=ku(questions.length);
+      }
+    }).catch(()=>{});
+
+  db.from("rewards").select("*").eq("active",true)
+    .then(({data,error})=>{
+      if(!error && data){
+        document.getElementById("rewardCount").textContent=ku(data.length);
+      }
+    }).catch(()=>{});
+
+  document.getElementById("qCount").textContent=ku(allQuestions.length);
+  document.getElementById("rewardCount").textContent=ku(6);
+  renderSections();
+}
+function openBookPdf(){
+  window.open("biology-grade12-2022.pdf","_blank","noopener");
+}
+
+function renderBooks(){
+ const el=document.getElementById("bookCards");
+ if(!books.length){el.innerHTML='<div class="empty">هیچ کتێبێکی چالاک نییە.</div>';return}
+ el.innerHTML=books.map(b=>`<article class="card">
+  <div class="bookIcon" onclick="openBookPdf()" title="خوێندنەوەی PDF">📘</div>
+  <h3>${b.title||"کتێب"}</h3>
+  <p>${b.subject||""} • ${b.edition_year||""}</p>
+  <div class="bookActions">
+    <span class="pill">پۆلی ${ku(b.grade_level||"")}</span>
+    <button class="bookRead" onclick="openBookPdf()">📖 خوێندنەوەی کتێب</button>
+    <button class="bookQuiz" onclick="filterBook('${b.id}')">🧠 بەشەکان</button>
+  </div>
+</article>`).join("");
+}
+function renderSections(bookId){
+ const el=document.getElementById("sectionCards");
+ let ss=sections.filter(s=>!bookId||s.book_id===bookId);
+ if(!ss.length){
+   el.innerHTML='<div class="empty">بەشەکانی کتێبی زیندەزانی خەریکی بارکردنن...</div>';
+   return;
+ }
+ el.innerHTML=ss.map(s=>`<article class="card"><div style="font-size:38px;margin-bottom:10px">🧠</div><h3>${s.section_code?ku(s.section_code)+" — ":""}${s.title}</h3><p>١٠٠ پرسیاری هەڵبژاردنەیی</p><div class="cardBottom"><span class="pill">ئاسان • ناوەند • قورس</span><button class="go" onclick="startQuiz('${s.id}')">دەستپێبکە</button></div></article>`).join("");
+}
+function goStage(event,theme){
+  if(event){event.preventDefault();}
+  setTheme(theme);
+  if(!currentUser){openAuth('login');toast('تکایە سەرەتا بچۆ ژوورەوە');return false;}
+  showHomeSection('quizSec');
+  renderSections();
+  return true;
+}
+function filterBook(id){
+ if(!currentUser){openAuth('login');toast('تکایە سەرەتا بچۆ ژوورەوە');return;}
+  const book=books.find(b=>b.id===id)||books[0];
+  document.getElementById("qTitle").textContent="🧠 بەشەکانی "+(book?.title||"کتێب");
+  renderSections(id);
+  scrollToId("quizSec");
+}
+function startQuiz(sectionId){
+ if(!currentUser){ openAuth('login'); toast('تکایە سەرەتا بچۆ ژوورەوە'); return; }
+ questions=allQuestions.filter(q=>q.section_id===sectionId);
+ if(!questions.length){toast("پرسیار بۆ ئەم بەشە بەردەست نییە");load();return}
+ questions=questions.slice(0,10);current=0;answers={};answered={};
+ hideSpecialPages();document.getElementById("home").style.display="none";document.getElementById("quiz").style.display="block";document.getElementById("result").style.display="none";
+ document.getElementById("qTitle").textContent="🧠 کویزی بەش";
+ renderQ();window.scrollTo({top:0,behavior:"smooth"});
+}
+function renderQ(){
+ let q=questions[current];
+ document.getElementById("qNum").textContent=`${ku(current+1)} / ${ku(questions.length)}`;
+ document.getElementById("bar").style.width=((current+1)/questions.length*100)+"%";
+ document.getElementById("question").textContent=q.question_text;
+ let d=(q.difficulty||"easy").toLowerCase();
+ let dk=d==="hard"?"قورس":d==="medium"?"ناوەند":"ئاسان";
+ document.getElementById("difficulty").textContent=dk;
+ document.getElementById("points").textContent=ku(q.points||2)+" خاڵ";
+
+ let opts=[q.option_a,q.option_b,q.option_c,q.option_d];
+ let wasAnswered=answered[current]!==undefined;
+ document.getElementById("options").innerHTML=opts.map((x,i)=>{
+   let cls="opt";
+   if(wasAnswered){
+     if(i===q.correct_option) cls+=" correct";
+     else if(i===answers[current]) cls+=" wrong";
+   } else if(answers[current]===i) cls+=" sel";
+   return `<button class="${cls}" ${wasAnswered?"disabled":""} onclick="choose(${i})">${["ئە","ب","ج","د"][i]}. ${x}</button>`;
+ }).join("");
+
+ const fb=document.getElementById("answerFeedback"); const hint=document.getElementById("nextHint");
+ if(wasAnswered){
+   const isCorrect=answers[current]===q.correct_option;
+   const pts=q.points||2;
+   fb.className="answerFeedback "+(isCorrect?"correct":"wrong"); if(hint) hint.style.display="block";
+   fb.innerHTML=isCorrect
+      ? `✅ وەڵامەکەت <strong>ڕاستە</strong>! <span class="earned">+${ku(pts)} خاڵ</span> زیادکرا.`
+      : `❌ وەڵامەکەت <strong>هەڵەیە</strong>. وەڵامی ڕاست: <strong>${["ئە","ب","ج","د"][q.correct_option]}</strong>. <span class="earned">+٠ خاڵ</span>`;
+ }else{
+   fb.className="answerFeedback";
+   fb.innerHTML="";
+ }
+ const next=document.querySelector(".next");
+ next.disabled=!wasAnswered;
+ next.style.opacity=wasAnswered?"1":".45";
+ next.style.cursor=wasAnswered?"pointer":"not-allowed";
+}
+
+function choose(i){
+ if(answered[current]!==undefined) return;
+ answers[current]=i;
+ answered[current]=true;
+ renderQ();
+ // No automatic advance: the learner presses «دواتر» after viewing the result.
+}
+
+function prevQ(){if(current>0){current--;renderQ()}}
+function nextQ(){if(answered[current]===undefined){return} if(current<questions.length-1){current++;renderQ()}else finish()}
+function finish(){
+ let pts=0,correct=0;questions.forEach((q,i)=>{if(answers[i]===q.correct_option){correct++;pts+=q.points||2}});
+ document.getElementById("quiz").style.display="none";document.getElementById("result").style.display="block";
+ document.getElementById("score").textContent=ku(pts)+" خاڵ";document.getElementById("resultText").textContent=`ڕاستەکان: ${ku(correct)} لە ${ku(questions.length)} • ئەم تاقیکردنەوەیە بۆ ١٠ پرسیار بوو.`;
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function home(){hideSpecialPages();document.getElementById("home").style.display="block";document.getElementById("quiz").style.display="none";document.getElementById("result").style.display="none";load();window.scrollTo({top:0,behavior:"smooth"})}
+function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:"smooth"})}
+
+function hideSpecialPages(){
+  document.querySelectorAll(".specialPage").forEach(x=>x.style.display="none");
+}
+function showHomeSection(id){
+  hideSpecialPages();
+  document.getElementById("home").style.display="block";
+  document.getElementById("quiz").style.display="none";
+  document.getElementById("result").style.display="none";
+  setTimeout(()=>document.getElementById(id)?.scrollIntoView({behavior:"smooth"}),20);
+}
+async function showPage(page){
+  document.getElementById("home").style.display="none";
+  document.getElementById("quiz").style.display="none";
+  document.getElementById("result").style.display="none";
+  hideSpecialPages();
+  const el=document.getElementById(page);
+  if(!el)return;
+  el.style.display="block";
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(page==="leaderboard") await loadLeaderboard();
+  if(page==="rewards") await loadRewards();
+  if(page==="progressFeature") await loadProgressFeature();
+}
+async function loadProgressFeature(){
+  const pointsEl=document.getElementById('progressPoints');
+  const levelEl=document.getElementById('progressLevel');
+  const rankEl=document.getElementById('progressRank');
+  const quizEl=document.getElementById('progressQuizCount');
+  const rateEl=document.getElementById('progressCorrectRate');
+  const nextEl=document.getElementById('progressNextReward');
+  const bar=document.getElementById('progressBarFeature');
+  const txt=document.getElementById('progressTextFeature');
+  let points=0, quizzes=0, correct=0, total=0, rank='—';
+  if(currentUser){
+    const p=await db.from('profiles').select('points').eq('id',currentUser.id).maybeSingle();
+    points=Number(p.data?.points||0);
+    const a=await db.from('attempts').select('score,total_questions').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(100);
+    if(a.data){quizzes=a.data.length; a.data.forEach(x=>{correct+=Number(x.score||0); total+=Number(x.total_questions||0)})}
+    const r=await db.from('attempts').select('user_id,score').order('score',{ascending:false}).limit(100);
+    if(r.data){const idx=r.data.findIndex(x=>x.user_id===currentUser.id); if(idx>=0)rank=ku(idx+1)}
+  }
+  const level=Math.floor(points/100)+1; const progress=points%100;
+  const reward=[500,1500,3000,5000,7500,10000].find(x=>x>points)||10000;
+  pointsEl.textContent=ku(points); levelEl.textContent=ku(level); rankEl.textContent=rank; quizEl.textContent=ku(quizzes); rateEl.textContent=total?Math.round(correct/total*100)+'٪':'—'; nextEl.textContent=ku(Math.max(0,reward-points));
+  bar.style.width=progress+'%'; txt.textContent=`${ku(progress)} لە ١٠٠ خاڵ بۆ ئاستی داهاتوو • ${ku(Math.max(0,reward-points))} خاڵ بۆ نزیکترین خەڵات.`;
+}
+
+async function loadLeaderboard(){
+  const el=document.getElementById("leaderboardCards");
+  el.innerHTML='<div class="empty">پلەبەندی بار دەکرێت...</div>';
+  // Prefer completed attempts if available. If there are no public rows, show a clear empty state.
+  const {data,error}=await db.from("attempts").select("*").order("score",{ascending:false}).limit(10);
+  if(error || !data || !data.length){
+    el.innerHTML='<div class="empty">هێشتا هیچ پلەبەندییەکی تۆمارکراو نییە.</div>';
+    return;
+  }
+  el.innerHTML=data.map((a,i)=>{
+    const name=a.user_name||a.username||a.name||"بەشداربوو";
+    const score=a.score ?? a.total_score ?? 0;
+    return `<article class="card rankCard"><div style="display:flex;align-items:center;gap:14px"><div class="rankNum">${ku(i+1)}</div><div><h3>${name}</h3><p>بەشداربوون لە کویز</p></div><div class="rankPoints">${ku(score)} خاڵ</div></div></article>`;
+  }).join("");
+}
+async function loadRewards(){
+  const el=document.getElementById("rewardCards");
+  const rewardNames=["خەڵاتی بریلیانت","خەڵاتی سوپەر","خەڵاتی دایەمۆند","خەڵاتی زێڕ","خەڵاتی زیو","خەڵاتی برۆنز"];
+    const rewardIcons=["✨","🏆","💎","🥇","🥈","🥉"];
+    const rewardPoints=[10000,7500,5000,3000,1500,500];
+  const rewardDescriptions=[
+    "بەرزترین پلەی خەڵات بۆ پێشەنگانی Quiz Champion",
+    "بۆ باشترین ئەنجام و پێشبڕکێی بەرز",
+    "خەڵاتێکی تایبەت بۆ پێشەنگە پێشکەوتووەکان",
+    "خەڵاتی ئەنجامدانی باش و خاڵی زۆر",
+    "بۆ ئەو فێرخوازانەی بەردەوام پێش دەچن",
+    "دەستپێکی جوان بۆ پێشەنگە نوێکان"
+  ];
+  el.classList.add("rewardGrid");
+  el.innerHTML=rewardNames.map((name,i)=>
+    `<article class="card rewardCard">
+      <div class="rewardIcon">${rewardIcons[i]}</div>
+      <div class="rewardTop">
+        <div class="rewardName">${name}</div>
+        <div class="rewardRank">خەڵاتی ${ku(i+1)}</div>
+      </div>
+      <div class="rewardPoints">${ku(rewardPoints[i])} خاڵ</div>
+      <div class="rewardDesc">${rewardDescriptions[i]}</div>
+    </article>`
+  ).join("");
+}
+
+let paidAccess=false;
+let currentUser=null;
+let selectedPayment='asiapay';
+let authMode='login';
+let authMethod='email';
+
+async function refreshAccess(){
+  const {data:{session}}=await db.auth.getSession();
+  currentUser=session?.user||null;
+  // Temporary free-access mode requested by the owner: payment is disabled.
+  paidAccess=!!currentUser;
+  updateAccessUI();
+  if(currentUser){
+    const {data:profile}=await db.from('profiles').select('full_name,grade').eq('id',currentUser.id).maybeSingle();
+    if(profile?.grade){setTheme(gradeToTheme(profile.grade));}
+    else { const saved=localStorage.getItem('qc_theme'); setTheme(saved&&THEME_META[saved]?saved:'default',false); }
+  } else {
+    const saved=localStorage.getItem('qc_theme'); setTheme(saved&&THEME_META[saved]?saved:'default',false);
+  }
+  updateAuthButtons();
+}
+function updateAccessUI(){
+  const st=document.getElementById('paymentStatus');
+  if(!st)return;
+  if(currentUser){
+    st.className='paymentStatus paid';
+    st.innerHTML='✅ <strong>دەستگەیشتن بەخۆڕایی چالاکە</strong>. لە وەشانی تاقیکردنەوەی ئێستادا هیچ پارەدانێک پێویست نییە.';
+  }else{
+    st.className='paymentStatus free';
+    st.innerHTML='تکایە <strong>چوونەژوورەوە</strong> بکە. لە وەشانی ئێستادا پارەدان پێویست نییە.';
+  }
+}
+function guard(sectionId){
+ if(!currentUser){openAuth('login');toast('تکایە سەرەتا بچۆ ژوورەوە');return false;}
+ showHomeSection(sectionId);return true;
+}
+function guardPage(page){
+ if(!currentUser){openAuth('login');toast('تکایە سەرەتا بچۆ ژوورەوە');return false;}
+ showPage(page);return true;
+}
+function openAuth(mode='login'){
+ authMode=mode;
+ document.getElementById('authModal').style.display='flex';
+ setAuthMode(mode);
+ setAuthMethod(authMethod);
+ document.getElementById('authContact').focus();
+}
+function closeAuth(){document.getElementById('authModal').style.display='none';document.getElementById('authOtp').style.display='none';document.getElementById('authVerify').style.display='none';document.getElementById('authStatus').textContent='';}
+function setAuthMode(mode){
+ authMode=mode;
+ document.getElementById('authTitle').textContent=mode==='signup'?'خۆتۆمارکردنی فێرخواز':'چوونەژوورەوە';
+ document.getElementById('authLoginTab').classList.toggle('active',mode==='login');
+ document.getElementById('authSignupTab').classList.toggle('active',mode==='signup');
+ document.getElementById('authStatus').textContent='';
+}
+function setAuthMethod(method){
+ authMethod=method;
+ document.getElementById('emailMethod').classList.toggle('active',method==='email');
+ document.getElementById('phoneMethod').classList.toggle('active',method==='phone');
+ const input=document.getElementById('authContact');
+ input.value='';
+ input.type=method==='email'?'email':'tel';
+ input.placeholder=method==='email'?'ئیمەیڵەکەت بنووسە':'ژمارەی مۆبایل، نموونە: +9647xxxxxxxxx';
+ document.getElementById('authSend').textContent=(method==='email'?'📧 ناردنی لینکی چوونەژوورەوە':'📱 ناردنی کۆدی مۆبایل');
+ document.getElementById('authOtp').style.display='none';
+ document.getElementById('authVerify').style.display='none';
+}
+async function sendAuthCode(){
+ const contact=document.getElementById('authContact').value.trim();
+ const status=document.getElementById('authStatus');
+ if(!contact){status.textContent='تکایە زانیارییەکە بنووسە.';return;}
+ status.textContent='⏳ تکایە چاوەڕوان بە...';
+ try{
+   let result;
+   if(authMethod==='email') result=await db.auth.signInWithOtp({email:contact,options:{emailRedirectTo:window.location.href,shouldCreateUser:true}});
+   else result=await db.auth.signInWithOtp({phone:contact,options:{shouldCreateUser:true}});
+   if(result.error) throw result.error;
+   if(authMethod==='email'){
+     status.textContent='✅ لینک/ڕێنمایی چوونەژوورەوە بۆ ئیمەیڵەکەت نێردرا. تکایە ئیمەیڵەکەت بکەرەوە.';
+   }else{
+     document.getElementById('authOtp').style.display='block';
+     document.getElementById('authVerify').style.display='block';
+     status.textContent='✅ کۆدی پشتڕاستکردنەوە بۆ ژمارەکەت نێردرا.';
+   }
+ }catch(e){
+   console.error(e);
+   status.textContent='❌ '+(e?.message||'نەتوانرا چوونەژوورەوە/خۆتۆمارکردن ئەنجام بدرێت.');
+ }
+}
+async function verifyAuthCode(){
+ const contact=document.getElementById('authContact').value.trim();
+ const token=document.getElementById('authOtp').value.trim();
+ const status=document.getElementById('authStatus');
+ if(!token){status.textContent='تکایە کۆدی پشتڕاستکردنەوە بنووسە.';return;}
+ status.textContent='⏳ پشتڕاستکردنەوە...';
+ try{
+   const {data,error}=await db.auth.verifyOtp({phone:contact,token,type:'sms'});
+   if(error) throw error;
+   if(data?.session){closeAuth();await refreshAccess();toast('✅ بە سەرکەوتوویی چوویتە ژوورەوە.');}
+ }catch(e){status.textContent='❌ '+(e?.message||'کۆدەکە دروست نییە.');}
+}
+function updateAuthButtons(){
+ const buttons=document.querySelectorAll('.user .login');
+ if(buttons.length>=2){
+   buttons[0].textContent=currentUser?'چوونەدەرەوە':'چوونەژوورەوە';
+   buttons[0].onclick=currentUser?logout:()=>openAuth('login');
+   buttons[1].textContent=currentUser?'هەژمارەکەت چالاکە':'خۆتۆمارکردن';
+   buttons[1].onclick=currentUser?()=>showPage('payment'):()=>openAuth('signup');
+ }
+}
+async function logout(){await db.auth.signOut();await refreshAccess();toast('لە هەژمارەکەت چوویتەدەرەوە.');}
+async function login(){openAuth('login');}
+
+db.auth.onAuthStateChange(()=>{setTimeout(refreshAccess,100);});
+setTimeout(checkAsiaPayReturn,500);
+
+function toast(t){let x=document.getElementById("toast");x.textContent=t;x.style.display="block";setTimeout(()=>x.style.display="none",3000)}
+
+const THEME_META={
+  kids:{label:'بازنەی ١',hint:'بازنەی ١',icons:['🧩','🎈','🚀','⭐']},
+  teens:{label:'بازنەی ٢',hint:'بازنەی ٢',icons:['🔬','💡','⚡','🏆']},
+  senior:{label:'بازنەی ٣',hint:'بازنەی ٣',icons:['🧠','🧬','📊','🎓']},
+  default:{label:'سەرەکی',hint:'سێ بازنە — هەموو پۆلەکان',icons:['🧠','📚','🏅','🎁']}
+};
+function gradeToTheme(g){g=Number(g);if(g>=1&&g<=3)return'kids';if(g>=4&&g<=9)return'teens';if(g>=10&&g<=12)return'senior';return'default'}
+function setTheme(theme,save=true){
+  const t=THEME_META[theme]?theme:'default';
+  document.body.dataset.theme=t==='default'?'':t;
+  document.querySelectorAll('.themePicker button').forEach(b=>b.classList.remove('active'));
+  const id={kids:'themeKids',teens:'themeTeens',senior:'themeSenior'}[t];if(id)document.getElementById(id)?.classList.add('active');
+  document.querySelectorAll('.stageCard').forEach(c=>c.classList.toggle('selected',c.dataset.stage===t));
+  const meta=THEME_META[t];document.getElementById('themeHint').textContent=meta.hint;
+  meta.icons.forEach((icon,i)=>{const el=document.getElementById(`statIcon${i+1}`);if(el)el.textContent=icon;});
+  if(save)localStorage.setItem('qc_theme',t);
+}
+async function applyUserTheme(){
+  const saved=localStorage.getItem('qc_theme');
+  if(currentUser){
+    const {data:profile}=await db.from('profiles').select('grade,paid_access,full_name').eq('id',currentUser.id).maybeSingle();
+    paidAccess=!!profile?.paid_access;
+    const byGrade=gradeToTheme(profile?.grade);
+    if(byGrade!=='default'){setTheme(byGrade);return}
+  }
+  setTheme(saved&&THEME_META[saved]?saved:'default',false);
+}
+
+load();
+refreshAccess();
+</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}</script>
+</body></html>
