@@ -325,6 +325,35 @@ body[data-theme="kids"] .gradeHint{display:none!important;color:#8c7180}
 .authNote{font-size:12px;color:#6c789a;line-height:1.8;margin-top:12px}
 .authStatus{min-height:22px;margin-top:8px;color:#4d5d86;font-size:12px;font-weight:800}
 @media(max-width:520px){.authBox{padding:22px}.authMethod{grid-template-columns:1fr 1fr}}
+
+/* Keep the sign-in / registration dialog usable when its form is taller than the viewport. */
+.authModal{
+  box-sizing:border-box;
+  align-items:flex-start;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  padding:14px 12px max(18px, env(safe-area-inset-bottom));
+}
+.authBox{
+  box-sizing:border-box;
+  width:min(470px,100%);
+  max-height:calc(100vh - 28px);
+  max-height:calc(100dvh - 28px);
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  flex-shrink:0;
+  margin:auto;
+}
+.authBox .authAction{display:block;position:relative;z-index:1;min-height:48px;touch-action:manipulation}
+@media(max-width:520px){
+  .authModal{padding:10px 10px max(14px, env(safe-area-inset-bottom))}
+  .authBox{max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px);padding:18px}
+}
+
 </style>
 </head>
 <body>
