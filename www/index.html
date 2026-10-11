@@ -354,6 +354,32 @@ body[data-theme="kids"] .gradeHint{display:none!important;color:#8c7180}
   .authBox{max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px);padding:18px}
 }
 
+
+/* Robust fallback: scroll the whole authentication overlay, not a nested flex child. */
+.authModal{
+  display:none;
+  position:fixed;
+  inset:0;
+  box-sizing:border-box;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+  padding:16px 12px max(24px, env(safe-area-inset-bottom));
+}
+.authBox{
+  width:min(470px,100%);
+  max-height:none!important;
+  height:auto;
+  overflow:visible!important;
+  margin:0 auto 12px!important;
+  box-sizing:border-box;
+}
+@media(max-width:520px){
+  .authModal{padding:10px 10px max(20px, env(safe-area-inset-bottom))}
+  .authBox{padding:18px}
+}
+
 </style>
 </head>
 <body>
@@ -1012,10 +1038,14 @@ function guardPage(page){
 }
 function openAuth(mode='login'){
  authMode=mode;
- document.getElementById('authModal').style.display='flex';
+ const modal=document.getElementById('authModal');
+ /* Use the overlay itself as the scroll container so tall signup forms
+    remain reachable even when nested flex scrolling fails in the browser. */
+ modal.style.display='block';
+ modal.scrollTop=0;
  setAuthMode(mode);
  setAuthMethod(authMethod);
- document.getElementById('authContact').focus();
+ setTimeout(()=>{const contact=document.getElementById('authContact');if(contact)contact.focus({preventScroll:true});},0);
 }
 function closeAuth(){document.getElementById('authModal').style.display='none';document.getElementById('authOtp').style.display='none';document.getElementById('authVerify').style.display='none';document.getElementById('authStatus').textContent='';}
 function setAuthMode(mode){
