@@ -381,7 +381,8 @@ body[data-theme="kids"] .gradeHint{display:none!important;color:#8c7180}
 }
 
 
-/* Compact auth dialog: fit registration and action buttons on a normal laptop screen. */
+
+/* Actually scale down the complete signup card, including its overall height. */
 #authModal{
   display:none;
   align-items:center!important;
@@ -390,31 +391,23 @@ body[data-theme="kids"] .gradeHint{display:none!important;color:#8c7180}
   padding:8px!important;
 }
 #authModal .authBox{
-  width:min(430px, calc(100vw - 24px))!important;
-  max-height:calc(100vh - 16px)!important;
-  max-height:calc(100dvh - 16px)!important;
-  overflow-y:auto!important;
-  overflow-x:hidden!important;
-  padding:14px 18px!important;
-  margin:auto!important;
-  border-radius:18px!important;
+  width:min(540px, calc(100vw - 28px))!important;
+  max-width:none!important;
+  max-height:none!important;
+  height:auto!important;
+  overflow:visible!important;
+  padding:18px 22px!important;
+  margin:0 auto!important;
   box-sizing:border-box!important;
-  flex-shrink:1!important;
+  zoom:.76;
+  flex-shrink:0!important;
 }
-#authModal #authTitle{font-size:20px!important;margin-top:0!important}
-#authModal p{margin:4px 0!important;font-size:13px!important}
-#authModal .authTabs{margin:8px 0!important;padding:3px!important;gap:5px!important}
-#authModal .authTab{padding:7px!important}
-#authModal .authMethod{gap:7px!important;margin-bottom:7px!important}
-#authModal .authMethod button{padding:8px!important}
-#authModal .authField{padding:8px 11px!important;margin:4px 0!important;min-height:36px!important;font-size:14px!important}
-#authModal .authAction{padding:9px!important;margin-top:5px!important;min-height:38px!important;font-size:14px!important}
-#authModal .authNote{font-size:11px!important;line-height:1.45!important;margin-top:6px!important}
-#authModal .authStatus{min-height:16px!important;margin-top:3px!important}
-@media(max-height:800px){
- #authModal .authBox{padding:10px 16px!important}
- #authModal #signupFields .authField{margin:3px 0!important;padding:7px 10px!important;min-height:32px!important}
- #authModal .authNote{line-height:1.3!important}
+@media(max-width:650px){
+  #authModal .authBox{
+    width:calc(100vw - 24px)!important;
+    zoom:.84;
+    padding:14px 18px!important;
+  }
 }
 
 </style>
