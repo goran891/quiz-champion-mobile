@@ -460,6 +460,44 @@ const SUPABASE_URL="https://yymtqsxwcnkstoolvdor.supabase.co";
 const SUPABASE_KEY="sb_publishable_dD6SuCHnU8wzvrEArMa35A_sZF8rWB4";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let books=[],sections=[],questions=[],allQuestions=[],current=0,answers={},answered={};
+let currentStudentProfile=null;
+let curriculumQuizContext=null;
+function normalizeAcademicText(v){return String(v||'').toLowerCase().normalize('NFKC').replace(/[يى]/g,'ی').replace(/ئ/g,'ئ').replace(/[ة]/g,'ە').replace(/[ًٌٍَُِّْ]/g,'').trim()}
+function bookStage(book){
+ const g=Number(book?.grade_level||book?.grade||0);
+ return g>=1&&g<=3?'kids':g>=4&&g<=9?'teens':g>=10&&g<=12?'senior':'default';
+}
+function bookTrack(book){
+ const x=normalizeAcademicText([book?.track,book?.branch,book?.department,book?.section,book?.academic_track].filter(Boolean).join(' '));
+ if(/science|زانستی|زانست/.test(x))return 'science';
+ if(/literature|ادبی|وێژەیی|وێژە/.test(x))return 'literature';
+ return '';
+}
+function subjectMatchesBook(book,subject){
+ const values=[book?.subject,book?.subject_name,book?.title,book?.name].map(normalizeAcademicText);
+ const q=normalizeAcademicText(subject);
+ if(!q)return false;
+ if(values.some(v=>v.includes(q)||q.includes(v)&&v.length>2))return true;
+ if(/زیندەزانی|biology/.test(q))return values.some(v=>/biology|زیندەزانی/.test(v));
+ return false;
+}
+function currentStudentStage(){
+ const grade=Number(currentStudentProfile?.grade||0);
+ return gradeToTheme(grade);
+}
+function studentCanOpenStage(stage){
+ if(!currentUser){openAuth('login');toast('تکایە بچۆ ژوورەوە بۆ کردنەوەی بازنەی خۆت.');return false;}
+ const allowed=currentStudentStage();
+ if(!currentStudentProfile||!Number(currentStudentProfile.grade)){
+   toast('پۆلی فێرخواز لە پرۆفایلدا تۆمار نەکراوە؛ تکایە زانیارییەکانی هەژمارەکەت تەواو بکە.');
+   return false;
+ }
+ if(allowed!==stage){
+   toast('تەنها بازنەی گونجاو بە پۆلی تۆ کراوەیە.');
+   return false;
+ }
+ return true;
+}
 
 const ku=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
 async function load(){
@@ -482,9 +520,10 @@ async function load(){
   db.from("academic_books").select("*").eq("active",true).order("grade_level")
     .then(({data,error})=>{
       if(!error && data && data.length){
-        books=data;
+        books=[...data];
+        if(!books.some(b=>b.id===BIOLOGY_BOOK.id)) books.push(BIOLOGY_BOOK);
         renderBooks();
-        document.getElementById("bookCount").textContent=ku(data.length);
+        document.getElementById("bookCount").textContent=ku(books.length);
       }
     }).catch(()=>{});
 
@@ -601,44 +640,91 @@ function renderCurriculumSubjects(stage){
  const icons=['📘','🌙','🇬🇧','➗','🌱','🧪','⚛️','🕌','🌍','🎨'];
  document.getElementById('currGrid').innerHTML=list.map((name,i)=>'<button class="currTile" onclick="chooseSubject('+JSON.stringify(name).replace(/"/g,'&quot;')+')"><span>'+icons[i%icons.length]+'</span>'+name+'</button>').join('');
 }
+function curriculumBooksForSelection(){
+ const st=curriculumState;
+ return books.filter(b=>{
+   const sameStage=bookStage(b)=== (st.track?'senior':st.stage);
+   const sameGrade=!st.grade||Number(b.grade_level||b.grade)===Number(st.grade);
+   const track=bookTrack(b);
+   const sameTrack=!st.track||!track||track===st.track;
+   return sameStage&&sameGrade&&sameTrack&&subjectMatchesBook(b,st.subject);
+ });
+}
+function curriculumSectionsForBook(book){
+ return sections.filter(x=>x.book_id===book.id);
+}
+function showCurriculumMessage(message){
+ document.getElementById('currDetails').innerHTML='<div class="currNote">'+message+'</div>';
+}
 function chooseSubject(subject){
  curriculumState.subject=subject;
  document.getElementById('currTitle').textContent=subject;
- document.getElementById('currCrumbs').innerHTML='<button class="currBack" onclick="renderCurriculumSubjects(curriculumState.stage===\'senior\'?curriculumState.stage:curriculumState.stage)">← گەڕانەوە بۆ وانەکان</button>';
+ document.getElementById('currCrumbs').innerHTML='<button class="currBack" onclick="renderCurriculumSubjects(curriculumState.stage)">← گەڕانەوە بۆ وانەکان</button>';
  const stageLabel=curriculumState.grade?('پۆلی '+curriculumState.grade+' '+(curriculumState.track==='science'?'زانستی':'وێژەیی')):curriculumState.stage==='kids'?'بازنەی ١':'بازنەی ٢';
  document.getElementById('currGrid').innerHTML='<button class="currTile" onclick="openSubjectBook()"><span>📖</span>بینینی کتێب</button><button class="currTile" onclick="openSubjectQuiz()"><span>🧠</span>چوونە ناو کویز</button>';
- document.getElementById('currDetails').innerHTML='<div class="currNote"><b>'+stageLabel+' · '+subject+'</b><br>کتێب، بەشەکان، و کویز بۆ ئەم وانەیە بە جیاوازی ڕێکدەخرێن. پرسیار تەنها لە ناوەڕۆکی کتێبی پشتڕاستکراوەوە پیشان دەدرێت؛ پرسیاری نادڵنیا دروست ناکرێت.</div>';
+ document.getElementById('currDetails').innerHTML='<div class="currNote"><b>'+stageLabel+' · '+subject+'</b><br>کتێب و کویز بە پۆل و بەشی خوێندن ڕێکدەخرێن. پرسیار تەنها لە ناوەڕۆکی پشتڕاستکراوەوە پیشان دەدرێت.</div>';
 }
 function openSubjectBook(){
- const subj=curriculumState.subject;
- const book=books.find(b=>String(b.title||'').includes(subj)||String(b.subject||'').includes(subj));
- if(book){closeCurriculum();guard('booksSec');renderBooks();filterBook(book.id);return}
- document.getElementById('currDetails').innerHTML='<div class="currNote">کتێبی '+curriculumState.subject+' بۆ ئەم پۆل و بازنەیە لە بنکەدراوەدا نەدۆزرایەوە. کتێبی فەرمی پێویستە زیاد بکرێت؛ بۆ پاراستنی داواکارییەکەت، ناوەڕۆک یان پرسیاری خەیاڵی پیشان نادرێت.</div>';
+ const matches=curriculumBooksForSelection();
+ const book=matches[0];
+ if(book){
+   curriculumQuizContext={book,stage:curriculumState.stage,track:curriculumState.track,grade:curriculumState.grade,subject:curriculumState.subject};
+   const ss=curriculumSectionsForBook(book);
+   document.getElementById('currTitle').textContent=book.title||curriculumState.subject;
+   document.getElementById('currCrumbs').innerHTML='<button class="currBack" onclick="chooseSubject(curriculumState.subject)">← گەڕانەوە بۆ وانەکان</button>';
+   document.getElementById('currGrid').innerHTML='';
+   document.getElementById('currDetails').innerHTML='<div class="currNote"><b>'+ (book.title||curriculumState.subject) +'</b><br>پۆل: '+ku(book.grade_level||curriculumState.grade||'—')+' • بەش: '+(curriculumState.track==='science'?'زانستی':curriculumState.track==='literature'?'وێژەیی':'')+'</div>';
+   if(ss.length){
+     document.getElementById('currDetails').innerHTML+=ss.map(sec=>'<button class="currTile" style="width:100%;margin-top:8px;text-align:right" onclick="openBookSection(\''+sec.id+'\')">📘 '+(sec.title||sec.name||'بەش')+' — چوونە ناو کویز</button>').join('');
+   }else{
+     showCurriculumMessage('کتێبەکە ناسراوە، بەڵام بەشەکانی لە بنکەدراوەدا پەیوەست نەکراون. تکایە دڵنیابە academic_sections بە book_id ـی ئەم کتێبە تۆمار کراوە.');
+   }
+   return;
+ }
+ showCurriculumMessage('کتێبێک بۆ «'+curriculumState.subject+'» و پۆلی '+ku(curriculumState.grade||'—')+' نەدۆزرایەوە. کتێبە چالاکەکان تەنها کاتێک دەردەکەون کە پۆل و بابەت و بەشیان لە زانیاریی کتێبەکەدا هەماهەنگ بێت.');
+}
+function openBookSection(sectionId){
+ const ctx=curriculumQuizContext;
+ if(!ctx)return;
+ const qs=allQuestions.filter(q=>q.section_id===sectionId && q.source_verified===true);
+ if(!qs.length){showCurriculumMessage('پرسیاری پشتڕاستکراوە بۆ ئەم بەشە بەردەست نییە. تکایە پرسیارەکان لە question_bank بە section_id و source_verified=true پەیوەست بکرێن.');return;}
+ curriculumQuizContext.sectionId=sectionId;
+ questions=qs.slice(0,10);current=0;answers={};answered={};
+ closeCurriculum();hideSpecialPages();
+ document.getElementById('home').style.display='none';
+ document.getElementById('quiz').style.display='block';
+ document.getElementById('result').style.display='none';
+ document.getElementById('qTitle').textContent='کویز — '+(ctx.book.title||ctx.subject);
+ document.getElementById('qSub').textContent='بازنەی ٣ ← '+(ctx.track==='science'?'بەشی زانستی':'بەشی وێژەیی')+' ← پۆلی '+ku(ctx.grade)+' ← '+ctx.subject;
+ renderQ();window.scrollTo({top:0,behavior:'smooth'});
 }
 function openSubjectQuiz(){
- const subj=curriculumState.subject;
- const matched=allQuestions.filter(q=>String(q.subject||q.subject_name||q.book_title||'').includes(subj));
- if(matched.length){closeCurriculum();guard('quizSec');renderSections();return}
- document.getElementById('currDetails').innerHTML='<div class="currNote">هێشتا پرسیاری پشتڕاستکراوەی کتێب بۆ «'+subj+'» و ئەم پۆلە بەردەست نییە. کاتێک کتێبی فەرمی و بەشەکانی زیاد بکرێن، پرسیارەکان بە ئاستی ئاسان، مامناوەند، گران و زۆر گران ڕێکدەخرێن.</div>';
+ const matches=curriculumBooksForSelection();
+ if(!matches.length){showCurriculumMessage('کتێبی فەرمی بۆ «'+curriculumState.subject+'» و پۆلی '+ku(curriculumState.grade||'—')+' نەدۆزرایەوە. کتێبە چالاکەکان بە پۆل و بابەت و بەشی خوێندنەوە دەستنیشان دەکرێن.');return;}
+ const book=matches[0];
+ const ss=curriculumSectionsForBook(book);
+ curriculumQuizContext={book,stage:curriculumState.stage,track:curriculumState.track,grade:curriculumState.grade,subject:curriculumState.subject};
+ if(!ss.length){showCurriculumMessage('کتێبەکە دۆزرایەوە، بەڵام بەشەکانی بۆ کویز لە بنکەدراوەدا نییە.');return;}
+ document.getElementById('currTitle').textContent='بەشەکانی '+(book.title||curriculumState.subject);
+ document.getElementById('currCrumbs').innerHTML='<button class="currBack" onclick="chooseSubject(curriculumState.subject)">← گەڕانەوە بۆ وانەکان</button>';
+ document.getElementById('currGrid').innerHTML='';
+ document.getElementById('currDetails').innerHTML=ss.map(sec=>'<button class="currTile" style="width:100%;margin-top:8px;text-align:right" onclick="openBookSection(\''+sec.id+'\')">📘 '+(sec.title||sec.name||'بەش')+' — کویز</button>').join('');
 }
 
 function goStage(event,theme){
   if(event){event.preventDefault();event.stopPropagation();}
   try {
-    // Opening the curriculum must not depend on theme persistence/localStorage.
+    if(!studentCanOpenStage(theme)) return false;
     try { setTheme(theme,false); } catch(themeError) { console.warn('Theme styling skipped',themeError); }
     openCurriculum(theme);
     const overlay=document.getElementById('curriculumOverlay');
     if(!overlay) throw new Error('curriculum overlay element missing');
-    overlay.style.display='flex';
-    overlay.style.visibility='visible';
-    overlay.style.opacity='1';
+    overlay.style.display='flex';overlay.style.visibility='visible';overlay.style.opacity='1';
     return true;
   } catch(err) {
     console.error('Stage navigation failed:',err);
     const message='کێشەی کردنەوە: '+(err && err.message ? err.message : 'هەڵەی نەناسراو');
-    if(typeof toast==='function') toast(message);
-    else alert(message);
+    if(typeof toast==='function') toast(message); else alert(message);
     return false;
   }
 }
@@ -712,7 +798,17 @@ function finish(){
  document.getElementById("score").textContent=ku(pts)+" خاڵ";document.getElementById("resultText").textContent=`ڕاستەکان: ${ku(correct)} لە ${ku(questions.length)} • ئەم تاقیکردنەوەیە بۆ ١٠ پرسیار بوو.`;
  window.scrollTo({top:0,behavior:"smooth"});
 }
-function home(){hideSpecialPages();document.getElementById("home").style.display="block";document.getElementById("quiz").style.display="none";document.getElementById("result").style.display="none";load();window.scrollTo({top:0,behavior:"smooth"})}
+function home(){
+ if(curriculumQuizContext){
+   document.getElementById("quiz").style.display="none";document.getElementById("result").style.display="none";
+   document.getElementById("home").style.display="block";
+   ensureCurriculumUI();const overlay=document.getElementById('curriculumOverlay');overlay.style.display='flex';
+   if(curriculumQuizContext.sectionId){delete curriculumQuizContext.sectionId;openSubjectQuiz();}
+   else if(curriculumQuizContext.book){openSubjectBook();}
+   window.scrollTo({top:0,behavior:"smooth"});return;
+ }
+ hideSpecialPages();document.getElementById("home").style.display="block";document.getElementById("quiz").style.display="none";document.getElementById("result").style.display="none";load();window.scrollTo({top:0,behavior:"smooth"})
+}
 function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:"smooth"})}
 
 function hideSpecialPages(){
@@ -817,10 +913,12 @@ async function refreshAccess(){
   paidAccess=!!currentUser;
   updateAccessUI();
   if(currentUser){
-    const {data:profile}=await db.from('profiles').select('full_name,grade').eq('id',currentUser.id).maybeSingle();
+    const {data:profile}=await db.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();
+    currentStudentProfile=profile||null;
     if(profile?.grade){setTheme(gradeToTheme(profile.grade));}
     else { const saved=localStorage.getItem('qc_theme'); setTheme(saved&&THEME_META[saved]?saved:'default',false); }
   } else {
+    currentStudentProfile=null;
     const saved=localStorage.getItem('qc_theme'); setTheme(saved&&THEME_META[saved]?saved:'default',false);
   }
   updateAuthButtons();
