@@ -343,6 +343,23 @@ body[data-theme="kids"] .gradeHint{display:none!important;color:#8c7180}
     <p style="text-align:center;color:#697595;margin:7px 0">بە ئیمەیڵ یان ژمارەی مۆبایل</p>
     <div class="authTabs"><button id="authLoginTab" class="authTab active" onclick="setAuthMode('login')">چوونەژوورەوە</button><button id="authSignupTab" class="authTab" onclick="setAuthMode('signup')">خۆتۆمارکردن</button></div>
     <div class="authMethod"><button id="emailMethod" class="active" onclick="setAuthMethod('email')">📧 ئیمەیڵ</button><button id="phoneMethod" onclick="setAuthMethod('phone')">📱 مۆبایل</button></div>
+    <div id="signupFields" style="display:none">
+      <input id="signupFullName" class="authField" placeholder="ناوی چواری فێرخواز" autocomplete="name">
+      <input id="signupBirthYear" class="authField" type="number" min="1990" max="2020" placeholder="ساڵی لەدایکبوون">
+      <select id="signupGrade" class="authField" aria-label="پۆل">
+        <option value="">پۆلت هەڵبژێرە</option>
+        <option value="1">پۆلی ١</option><option value="2">پۆلی ٢</option><option value="3">پۆلی ٣</option>
+        <option value="4">پۆلی ٤</option><option value="5">پۆلی ٥</option><option value="6">پۆلی ٦</option>
+        <option value="7">پۆلی ٧</option><option value="8">پۆلی ٨</option><option value="9">پۆلی ٩</option>
+        <option value="10">پۆلی ١٠</option><option value="11">پۆلی ١١</option><option value="12">پۆلی ١٢</option>
+      </select>
+      <select id="signupDepartment" class="authField" aria-label="بەش" style="display:none">
+        <option value="">بەش هەڵبژێرە</option><option value="science">زانستی</option><option value="literature">وێژەیی</option>
+      </select>
+      <input id="signupSchool" class="authField" placeholder="ناوی قوتابخانە">
+      <input id="signupDistrict" class="authField" placeholder="قەزا">
+      <input id="signupCity" class="authField" placeholder="شار">
+    </div>
     <input id="authContact" class="authField" placeholder="ئیمەیڵەکەت بنووسە" autocomplete="email">
     <input id="authOtp" class="authField" placeholder="کۆدی پشتڕاستکردنەوە" inputmode="numeric" autocomplete="one-time-code" style="display:none">
     <button id="authSend" class="authAction" onclick="sendAuthCode()">بەردەوام بە بە ئیمەیڵ</button>
@@ -488,6 +505,7 @@ function currentStudentStage(){
 }
 function studentCanOpenStage(stage){
  if(!currentUser){openAuth('login');toast('تکایە بچۆ ژوورەوە بۆ کردنەوەی بازنەی خۆت.');return false;}
+ if(String(currentUser.email||'').toLowerCase()==='goran.sedeeq@gmail.com'||currentStudentProfile?.role==='admin')return true;
  const allowed=currentStudentStage();
  if(!currentStudentProfile||!Number(currentStudentProfile.grade)){
    toast('پۆلی فێرخواز لە پرۆفایلدا تۆمار نەکراوە؛ تکایە زانیارییەکانی هەژمارەکەت تەواو بکە.');
@@ -916,8 +934,9 @@ async function refreshAccess(){
   if(currentUser){
     const {data:profile}=await db.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();
     currentStudentProfile=profile||null;
-    if(profile?.grade){setTheme(gradeToTheme(profile.grade));}
-    else { const saved=localStorage.getItem('qc_theme'); setTheme(saved&&THEME_META[saved]?saved:'default',false); }
+    const isAdmin=String(currentUser.email||'').toLowerCase()==='goran.sedeeq@gmail.com'||profile?.role==='admin';
+    if(isAdmin){document.body.dataset.admin='true';setTheme('default',false);}
+    else {document.body.dataset.admin='false';if(profile?.grade){setTheme(gradeToTheme(profile.grade));}else{const saved=localStorage.getItem('qc_theme');setTheme(saved&&THEME_META[saved]?saved:'default',false);}}
   } else {
     currentStudentProfile=null;
     const saved=localStorage.getItem('qc_theme'); setTheme(saved&&THEME_META[saved]?saved:'default',false);
@@ -971,7 +990,28 @@ function setAuthMode(mode){
  document.getElementById('authTitle').textContent=mode==='signup'?'خۆتۆمارکردنی فێرخواز':'چوونەژوورەوە';
  document.getElementById('authLoginTab').classList.toggle('active',mode==='login');
  document.getElementById('authSignupTab').classList.toggle('active',mode==='signup');
+ document.getElementById('signupFields').style.display=mode==='signup'?'block':'none';
  document.getElementById('authStatus').textContent='';
+ updateSignupDepartmentVisibility();
+}
+function updateSignupDepartmentVisibility(){
+ const g=Number(document.getElementById('signupGrade')?.value||0);
+ const el=document.getElementById('signupDepartment');
+ if(el){el.style.display=g>=10&&g<=12?'block':'none';if(!(g>=10&&g<=12))el.value='';}
+}
+document.addEventListener('change',e=>{if(e.target?.id==='signupGrade')updateSignupDepartmentVisibility();});
+function getSignupMetadata(){
+ const grade=Number(document.getElementById('signupGrade').value);
+ const full_name=document.getElementById('signupFullName').value.trim();
+ const birth_year=Number(document.getElementById('signupBirthYear').value);
+ const school=document.getElementById('signupSchool').value.trim();
+ const district=document.getElementById('signupDistrict').value.trim();
+ const city=document.getElementById('signupCity').value.trim();
+ const department=document.getElementById('signupDepartment').value;
+ if(!full_name||!birth_year||!grade||!school||!district||!city)throw new Error('تکایە هەموو خانەکان پڕ بکەرەوە.');
+ if(birth_year<1990||birth_year>new Date().getFullYear())throw new Error('ساڵی لەدایکبوون دروست نییە.');
+ if(grade>=10&&grade<=12&&!department)throw new Error('بۆ بازنەی ٣، تکایە بەشی زانستی یان وێژەیی هەڵبژێرە.');
+ return {data:{full_name,birth_year,grade,school,district,city,department:grade>=10&&grade<=12?department:null}};
 }
 function setAuthMethod(method){
  authMethod=method;
@@ -992,8 +1032,10 @@ async function sendAuthCode(){
  status.textContent='⏳ تکایە چاوەڕوان بە...';
  try{
    let result;
-   if(authMethod==='email') result=await db.auth.signInWithOtp({email:contact,options:{emailRedirectTo:window.location.href,shouldCreateUser:true}});
-   else result=await db.auth.signInWithOtp({phone:contact,options:{shouldCreateUser:true}});
+   let signupOptions={};
+   if(authMode==='signup') signupOptions=getSignupMetadata();
+   if(authMethod==='email') result=await db.auth.signInWithOtp({email:contact,options:{emailRedirectTo:window.location.href,shouldCreateUser:true,...signupOptions}});
+   else result=await db.auth.signInWithOtp({phone:contact,options:{shouldCreateUser:true,...signupOptions}});
    if(result.error) throw result.error;
    if(authMethod==='email'){
      status.textContent='✅ لینک/ڕێنمایی چوونەژوورەوە بۆ ئیمەیڵەکەت نێردرا. تکایە ئیمەیڵەکەت بکەرەوە.';
