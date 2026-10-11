@@ -471,6 +471,7 @@ function bookTrack(book){
  const x=normalizeAcademicText([book?.track,book?.branch,book?.department,book?.section,book?.academic_track].filter(Boolean).join(' '));
  if(/science|زانستی|زانست/.test(x))return 'science';
  if(/literature|ادبی|وێژەیی|وێژە/.test(x))return 'literature';
+ if(/biology|زیندەزانی/.test(normalizeAcademicText([book?.subject,book?.title,book?.name].filter(Boolean).join(' '))))return 'science';
  return '';
 }
 function subjectMatchesBook(book,subject){
