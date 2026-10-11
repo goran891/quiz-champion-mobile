@@ -942,6 +942,10 @@ async function refreshAccess(){
     const saved=localStorage.getItem('qc_theme'); setTheme(saved&&THEME_META[saved]?saved:'default',false);
   }
   updateAuthButtons();
+  if(currentUser && currentStudentProfile?.grade && String(currentUser.email||'').toLowerCase()!=='goran.sedeeq@gmail.com' && currentStudentProfile?.role!=='admin'){
+    const studentStage=gradeToTheme(currentStudentProfile.grade);
+    setTimeout(()=>{try{goStage(null,studentStage);}catch(e){console.warn('Could not open student stage',e);}},250);
+  }
 }
 function updateAccessUI(){
   const st=document.getElementById('paymentStatus');
