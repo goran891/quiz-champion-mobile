@@ -488,6 +488,23 @@ body[data-theme="kids"] .gradeHint{display:none!important;color:#8c7180}
 
 <section class="section" id="booksSec"><div class="head"><div><h2>📚 کتێبەکان</h2><p>کتێبێک هەڵبژێرە و بەشێک بۆ کویز دەستپێبکە.</p></div></div><div class="cards" id="bookCards"><div class="empty">کتێبەکان بار دەکرێن...</div></div></section>
 <section class="section" id="quizSec"><div class="head"><div><h2>🧠 بەشەکانی کویز</h2><p>هەر بەشێک ١٠٠ پرسیاری هەڵبژاردنەیی هەیە.</p></div></div><div class="cards" id="sectionCards"><div class="empty">بۆ کردنەوەی کتێب کتێبێک هەڵبژێرە.</div></div></section>
+<section class="section" id="questionSubmitLink"><div class="head"><div><h2>✍️ پرسیاری خۆت بنێرە</h2><p>پرسیارێک لە کتێبەکەت ئامادە بکە بۆ پشکنینی مامۆستا.</p></div><button class="featureAction" onclick="showPage('questionSubmit')">دروستکردنی پرسیار ←</button></div></section>
+
+<section class="section specialPage" id="questionSubmit" style="display:none;padding-top:38px">
+ <div class="head"><div><h2>✍️ ناردنی پرسیاری فێرخواز</h2><p>پرسیارەکە بۆ پشکنین دەنێردرێت و خۆکارانە ناچێتە ناو بانکی کویز.</p></div><button class="back" onclick="home()">← سەرەتا</button></div>
+ <form class="card" style="display:grid;gap:10px;padding:18px" onsubmit="submitStudentQuestion(event)">
+  <label>وانە</label><input id="sqSubject" required maxlength="120" placeholder="ناوی وانە">
+  <label>بەش یان بابەت</label><input id="sqTopic" required maxlength="160" placeholder="ناوی بەش">
+  <label>پرسیار</label><textarea id="sqText" required maxlength="2000" rows="3"></textarea>
+  <label>هەڵبژاردە A</label><input id="sqA" required>
+  <label>هەڵبژاردە B</label><input id="sqB" required>
+  <label>هەڵبژاردە C</label><input id="sqC" required>
+  <label>هەڵبژاردە D</label><input id="sqD" required>
+  <label>وەڵامی ڕاست</label><select id="sqCorrect"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
+  <label>سەرچاوەی کتێب / لاپەڕە</label><input id="sqSource" required maxlength="500" placeholder="ناوی کتێب و ژمارەی لاپەڕە">
+  <button class="featureAction" type="submit">ناردن بۆ پشکنین</button><div id="sqSaved" role="status"></div>
+ </form>
+</section>
 </main>
 
 
@@ -1181,6 +1198,24 @@ async function applyUserTheme(){
     if(byGrade!=='default'){setTheme(byGrade);return}
   }
   setTheme(saved&&THEME_META[saved]?saved:'default',false);
+}
+
+async function submitStudentQuestion(e){
+ e.preventDefault();
+ if(!currentUser){openAuth('login');toast('بۆ ناردنی پرسیار سەرەتا بچۆ ژوورەوە');return;}
+ const form=e.currentTarget, btn=form.querySelector('button[type="submit"]'), box=document.getElementById('sqSaved');
+ const val=id=>(document.getElementById(id)?.value||'').trim();
+ const options=[val('sqA'),val('sqB'),val('sqC'),val('sqD')];
+ if(options.some(x=>!x)||!val('sqSubject')||!val('sqTopic')||!val('sqText')||!val('sqSource')){box.textContent='تکایە هەموو خانەکان پڕ بکەرەوە.';return;}
+ const row={user_id:currentUser.id,subject:val('sqSubject'),topic:val('sqTopic'),question_text:val('sqText'),options,correct_index:Number(document.getElementById('sqCorrect').value),source_reference:val('sqSource'),status:'pending_review'};
+ btn.disabled=true;btn.textContent='لە ناردندا...';box.textContent='تکایە چاوەڕێ بکە...';
+ try{
+  const {error}=await db.from('student_question_submissions').insert(row);
+  if(error) throw error;
+  box.textContent='پرسیارەکەت بە سەرکەوتوویی بۆ پشکنین نێردرا.';
+  toast('پرسیار نێردرا بۆ پشکنین');form.reset();
+ }catch(err){console.error('student question submission failed',err);box.textContent='ناردن سەرکەوتوو نەبوو. دڵنیابە داتابەیس و RLS ڕێکخراون.';toast('ناردنی پرسیار سەرکەوتوو نەبوو');}
+ finally{btn.disabled=false;btn.textContent='ناردن بۆ پشکنین';}
 }
 
 load();
