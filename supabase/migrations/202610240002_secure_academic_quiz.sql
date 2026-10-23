@@ -154,3 +154,26 @@ grant execute on function public.submit_academic_quiz(uuid,jsonb) to authenticat
 revoke select on public.question_bank from anon, authenticated;
 grant select (id, section_id, question_text, option_a, option_b, option_c, option_d, difficulty, points, source_page, source_figure, source_text_locked, source_verified, active, created_at)
 on public.question_bank to authenticated;
+
+
+-- Lock student-submitted questions to the pending state; only admins can review.
+alter table public.student_question_submissions enable row level security;
+drop policy if exists "Students can submit own questions" on public.student_question_submissions;
+create policy "Students can submit own questions"
+on public.student_question_submissions for insert to authenticated
+with check (
+  auth.uid() = user_id
+  and status = 'pending_review'
+  and reviewer_id is null
+  and reviewed_at is null
+);
+drop policy if exists "Students can view own submissions" on public.student_question_submissions;
+create policy "Students can view own submissions"
+on public.student_question_submissions for select to authenticated
+using (auth.uid() = user_id);
+drop policy if exists "Admins can review submissions" on public.student_question_submissions;
+create policy "Admins can review submissions"
+on public.student_question_submissions for all to authenticated
+using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'))
+with check (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+grant select, insert on public.student_question_submissions to authenticated;
