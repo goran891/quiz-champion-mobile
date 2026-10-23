@@ -639,7 +639,7 @@ async function load(){
       }
     }).catch(()=>{});
 
-  db.from("question_bank").select("*").eq("active",true).eq("source_verified",true).order("created_at")
+  db.from("question_bank").select("id,section_id,question_text,option_a,option_b,option_c,option_d,difficulty,points,source_page,source_figure,source_text_locked,source_verified,active,created_at").eq("active",true).eq("source_verified",true).order("created_at")
     .then(({data,error})=>{
       if(!error && data){
         allQuestions=data;
@@ -838,11 +838,18 @@ function filterBook(id){
   renderSections(id);
   scrollToId("quizSec");
 }
-function startQuiz(sectionId){
+let activeQuizSessionId=null;
+async function startQuiz(sectionId){
  if(!currentUser){ openAuth('login'); toast('تکایە سەرەتا بچۆ ژوورەوە'); return; }
- questions=allQuestions.filter(q=>q.section_id===sectionId);
- if(!questions.length){toast("پرسیار بۆ ئەم بەشە بەردەست نییە");load();return}
- questions=questions.slice(0,10);current=0;answers={};answered={};
+ toast('کویزەکە بە شێوەی پارێزراو ئامادە دەکرێت...');
+ const {data,error}=await db.rpc('start_academic_quiz',{p_section_id:sectionId});
+ if(error||!data?.session_id||!Array.isArray(data.questions)||!data.questions.length){
+   console.error('start_academic_quiz unavailable',error);
+   toast(error?.message?.includes('payment required')?'بۆ دەستپێکردنی کویز پێویستە پارەدان پشتڕاست کرابێتەوە.':'کویزە پارێزراوەکە ئامادە نییە. پێویستە migration ـی backend جێبەجێ بکرێت.');
+   return;
+ }
+ activeQuizSessionId=data.session_id;
+ questions=data.questions;current=0;answers={};answered={};
  hideSpecialPages();document.getElementById("home").style.display="none";document.getElementById("quiz").style.display="block";document.getElementById("result").style.display="none";
  document.getElementById("qTitle").textContent="🧠 کویزی بەش";
  renderQ();window.scrollTo({top:0,behavior:"smooth"});
@@ -853,53 +860,32 @@ function renderQ(){
  document.getElementById("bar").style.width=((current+1)/questions.length*100)+"%";
  document.getElementById("question").textContent=q.question_text;
  let d=(q.difficulty||"easy").toLowerCase();
- let dk=d==="hard"?"قورس":d==="medium"?"ناوەند":"ئاسان";
- document.getElementById("difficulty").textContent=dk;
+ document.getElementById("difficulty").textContent=d==="hard"?"قورس":d==="medium"?"ناوەند":"ئاسان";
  document.getElementById("points").textContent=ku(q.points||2)+" خاڵ";
-
- let opts=[q.option_a,q.option_b,q.option_c,q.option_d];
- let wasAnswered=answered[current]!==undefined;
+ const opts=[q.option_a,q.option_b,q.option_c,q.option_d];
+ const wasAnswered=answered[current]!==undefined;
  document.getElementById("options").innerHTML=opts.map((x,i)=>{
-   let cls="opt";
-   if(wasAnswered){
-     if(i===q.correct_option) cls+=" correct";
-     else if(i===answers[current]) cls+=" wrong";
-   } else if(answers[current]===i) cls+=" sel";
+   const cls=wasAnswered?(i===answers[current]?"opt sel":"opt"):(answers[current]===i?"opt sel":"opt");
    return `<button class="${cls}" ${wasAnswered?"disabled":""} onclick="choose(${i})">${["ئە","ب","ج","د"][i]}. ${x}</button>`;
  }).join("");
-
- const fb=document.getElementById("answerFeedback"); const hint=document.getElementById("nextHint");
- if(wasAnswered){
-   const isCorrect=answers[current]===q.correct_option;
-   const pts=q.points||2;
-   fb.className="answerFeedback "+(isCorrect?"correct":"wrong"); if(hint) hint.style.display="block";
-   fb.innerHTML=isCorrect
-      ? `✅ وەڵامەکەت <strong>ڕاستە</strong>! <span class="earned">+${ku(pts)} خاڵ</span> زیادکرا.`
-      : `❌ وەڵامەکەت <strong>هەڵەیە</strong>. وەڵامی ڕاست: <strong>${["ئە","ب","ج","د"][q.correct_option]}</strong>. <span class="earned">+٠ خاڵ</span>`;
- }else{
-   fb.className="answerFeedback";
-   fb.innerHTML="";
- }
- const next=document.querySelector(".next");
- next.disabled=!wasAnswered;
- next.style.opacity=wasAnswered?"1":".45";
- next.style.cursor=wasAnswered?"pointer":"not-allowed";
+ const fb=document.getElementById("answerFeedback"),hint=document.getElementById("nextHint");
+ if(wasAnswered){fb.className="answerFeedback";fb.textContent="وەڵامەکەت تۆمار کرا؛ ئەنجامی ڕاستی لە کۆتایی لەلایەن سێرڤەرەوە هەژمار دەکرێت.";if(hint)hint.style.display="block";}
+ else{fb.className="answerFeedback";fb.textContent="";if(hint)hint.style.display="none";}
+ const next=document.querySelector(".next");next.disabled=!wasAnswered;next.style.opacity=wasAnswered?"1":".45";next.style.cursor=wasAnswered?"pointer":"not-allowed";
 }
-
-function choose(i){
- if(answered[current]!==undefined) return;
- answers[current]=i;
- answered[current]=true;
- renderQ();
- // No automatic advance: the learner presses «دواتر» after viewing the result.
-}
-
-function prevQ(){if(current>0){current--;renderQ()}}
-function nextQ(){if(answered[current]===undefined){return} if(current<questions.length-1){current++;renderQ()}else finish()}
-function finish(){
- let pts=0,correct=0;questions.forEach((q,i)=>{if(answers[i]===q.correct_option){correct++;pts+=q.points||2}});
+function choose(i){if(answered[current]!==undefined)return;answers[current]=i;answered[current]=true;renderQ();}
+function prevQ(){if(current>0){current--;renderQ();}}
+function nextQ(){if(answered[current]===undefined)return;if(current<questions.length-1){current++;renderQ();}else finish();}
+async function finish(){
+ if(!activeQuizSessionId){toast('سەشنی کویز نییە؛ تکایە کویزەکە دووبارە دەستپێبکە.');return;}
+ const payload=questions.map((q,i)=>({question_id:q.id,selected_option:answers[i]}));
+ const next=document.querySelector(".next");if(next){next.disabled=true;next.textContent="ئەنجام هەژمار دەکرێت...";}
+ const {data,error}=await db.rpc("submit_academic_quiz",{p_session_id:activeQuizSessionId,p_answers:payload});
+ if(error||!data){console.error("submit_academic_quiz failed",error);toast("ناردنی ئەنجام سەرکەوتوو نەبوو؛ خاڵ زیاد نەکرا. تکایە دووبارە هەوڵ بدەرەوە.");if(next){next.disabled=false;next.textContent="دواتر →";}return;}
+ activeQuizSessionId=null;
  document.getElementById("quiz").style.display="none";document.getElementById("result").style.display="block";
- document.getElementById("score").textContent=ku(pts)+" خاڵ";document.getElementById("resultText").textContent=`ڕاستەکان: ${ku(correct)} لە ${ku(questions.length)} • ئەم تاقیکردنەوەیە بۆ ١٠ پرسیار بوو.`;
+ document.getElementById("score").textContent=ku(data.score)+" خاڵ";
+ document.getElementById("resultText").textContent=`وەڵامی ڕاست: ${ku(data.correct_count)} لە ${ku(data.question_count)} • خاڵەکان لە سێرڤەر هەژمار کران.`;
  window.scrollTo({top:0,behavior:"smooth"});
 }
 function home(){
