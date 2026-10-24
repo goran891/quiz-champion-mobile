@@ -1140,7 +1140,12 @@ async function sendAuthCode(){
    }
  }catch(e){
    console.error(e);
-   status.textContent='❌ '+(e?.message||'نەتوانرا چوونەژوورەوە/خۆتۆمارکردن ئەنجام بدرێت.');
+   const msg=String(e?.message||'');
+   if(/rate limit|email rate limit exceeded|too many requests/i.test(msg)){
+     status.textContent='⚠️ سنووری ناردنی ئیمەیڵی Supabase پڕ بووە. دووبارە داوا مەکە؛ کەمێک چاوەڕێ بکە. بۆ چارەسەری هەمیشەیی SMTPی تایبەت بە دۆمەینی پشتڕاستکراو ڕێکبخرێت.';
+   } else {
+     status.textContent='❌ '+(msg||'نەتوانرا چوونەژوورەوە/خۆتۆمارکردن ئەنجام بدرێت.');
+   }
  }
 }
 async function verifyAuthCode(){
