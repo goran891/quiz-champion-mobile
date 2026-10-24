@@ -12,6 +12,7 @@ declare
   v_questions jsonb;
 begin
   if v_user is null then raise exception 'authentication required' using errcode='28000'; end if;
+  -- Preview free-access mode: authentication required; paid_access is not a gate here.
   if not exists (
     select 1 from public.academic_sections s
     join public.academic_books b on b.id=s.book_id
@@ -66,6 +67,7 @@ declare
   v_earned integer;
 begin
   if v_user is null then raise exception 'authentication required' using errcode='28000'; end if;
+  -- Preview free-access mode: authentication required; paid_access is not a gate here.
   select * into v_session from public.test_sessions where id=p_session_id and student_id=v_user for update;
   if not found then raise exception 'session not found' using errcode='P0002'; end if;
   if v_session.status <> 'in_progress' then raise exception 'session already submitted' using errcode='22023'; end if;
