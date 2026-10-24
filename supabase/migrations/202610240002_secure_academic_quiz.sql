@@ -151,7 +151,7 @@ revoke all on function public.submit_academic_quiz(uuid,jsonb) from public, anon
 grant execute on function public.start_academic_quiz(uuid) to authenticated;
 grant execute on function public.submit_academic_quiz(uuid,jsonb) to authenticated;
 
-revoke select on public.question_bank from anon, authenticated;
+revoke select on public.question_bank from public, anon, authenticated;
 grant select (id, section_id, question_text, option_a, option_b, option_c, option_d, difficulty, points, source_page, source_figure, source_text_locked, source_verified, active, created_at)
 on public.question_bank to authenticated;
 
