@@ -12,9 +12,6 @@ declare
   v_questions jsonb;
 begin
   if v_user is null then raise exception 'authentication required' using errcode='28000'; end if;
-  if not exists (select 1 from public.profiles p where p.id=v_user and coalesce(p.paid_access,false)) then
-    raise exception 'payment required' using errcode='42501';
-  end if;
   if not exists (
     select 1 from public.academic_sections s
     join public.academic_books b on b.id=s.book_id
@@ -72,9 +69,6 @@ begin
   select * into v_session from public.test_sessions where id=p_session_id and student_id=v_user for update;
   if not found then raise exception 'session not found' using errcode='P0002'; end if;
   if v_session.status <> 'in_progress' then raise exception 'session already submitted' using errcode='22023'; end if;
-  if not exists (select 1 from public.profiles p where p.id=v_user and coalesce(p.paid_access,false)) then
-    raise exception 'payment required' using errcode='42501';
-  end if;
   if jsonb_typeof(p_answers) <> 'array' then raise exception 'answers must be an array' using errcode='22023'; end if;
   select count(*) into v_count from public.test_session_questions where session_id=p_session_id;
   select count(*) into v_submitted from jsonb_array_elements(p_answers);
