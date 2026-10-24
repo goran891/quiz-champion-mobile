@@ -410,12 +410,27 @@ body[data-theme="kids"] .gradeHint{display:none!important;color:#8c7180}
   }
 }
 
+
+.studentToolsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.studentTool{padding:22px!important;border-radius:22px!important}
+.toolIcon{font-size:32px;margin-bottom:10px}
+.studentTool h3{margin:0 0 8px;color:#fff;font-size:19px}
+.studentTool p{color:#b7bfdf;line-height:1.9;font-size:13px}
+.studentTool textarea{width:100%;resize:vertical;background:#0a1034;border:1px solid #333d77;border-radius:13px;padding:12px;color:#fff;font:inherit;line-height:1.8}
+.toolAction{margin-top:12px;background:linear-gradient(90deg,#6242e8,#1bbbd0);color:#fff;padding:11px 16px;border-radius:12px;font-weight:900}
+.studentTool small{display:block;margin-top:8px;color:#8af3c9}
+.toolCheck{display:flex;gap:10px;align-items:center;padding:8px 0;color:#e1e6ff}
+.flashcardAnswer{background:#0a1034;border:1px dashed #3c4785;border-radius:13px;padding:14px;color:#e0e6ff;line-height:1.9}
+@media(max-width:700px){.studentToolsGrid{grid-template-columns:1fr}}
+/* Hide legacy feature ribbon and quiz/book catalogue from the student-facing home screen. */
+.referenceFeatures,#booksSec,#quizSec,.stats{display:none!important}
+
 </style>
 </head>
 <body>
 <header class="nav"><div class="navin">
 <div class="brand"><img class="refLogo" src="assets/quiz-champion-logo.png" alt="Quiz Champion"></div>
-<nav class="links"><button class="active" onclick="home()">سەرەتا</button><button onclick="guard('quizSec')">🧠 کویز</button><button onclick="guard('booksSec');renderBooks()">📚 کتێب</button><button onclick="guardPage('leaderboard')">🏆 پلەبەندی</button><button onclick="showPage('rewards')">🎁 خەڵات</button><button onclick="showPage('payment')">💳 پارەدان</button></nav>
+<nav class="links"><button class="active" onclick="home()">سەرەتا</button><button onclick="showHomeSection('studentToolsSec')">🧰 ئامرازەکانی فێرخواز</button><button onclick="guardPage('leaderboard')">🏆 پلەبەندی</button></nav>
 <div class="user"><button class="avatar" aria-label="گەڕان">⌕</button><button class="login" style="background:#eaf2ff;color:#116de2;box-shadow:none" onclick="openAuth('login')">چوونە ژوورەوە</button><button class="login" onclick="openAuth('signup')">هەژمار دروست بکە</button><span style="font-weight:900;color:#17245b;white-space:nowrap">🌐 کوردی⌄</span></div>
 </div></header>
 <div class="themePicker" aria-label="هەڵبژاردنی ڕوکار"><button id="themeKids" onclick="setTheme('kids')">🟢 بازنەی ١ — پۆلی ١–٣</button><button id="themeTeens" onclick="setTheme('teens')">🔵 بازنەی ٢ — پۆلی ٤–٩</button><button id="themeSenior" onclick="setTheme('senior')">🟣 بازنەی ٣ — پۆلی ١٠–١٢</button></div><div class="gradeHint" id="themeHint" aria-hidden="true"></div>
@@ -477,18 +492,15 @@ body[data-theme="kids"] .gradeHint{display:none!important;color:#8c7180}
 </section>
 <div class="stats">
 <button type="button" class="stat" onclick="guard('quizSec')" aria-label="پرسیاری بەردەست">
-<div class="statIcon" id="statIcon1">🧠</div><div><b id="qCount">—</b><span>پرسیاری بەردەست</span></div></button>
-<button type="button" class="stat" onclick="showHomeSection('booksSec')" aria-label="کتێب">
-<div class="statIcon" id="statIcon2">📖</div><div><b id="bookCount">—</b><span>کتێب</span></div></button>
-<button type="button" class="stat" onclick="guard('quizSec')" aria-label="خاڵ بەپێی ئاست">
-<div class="statIcon" id="statIcon3">🏅</div><div><b>٢–٤</b><span>خاڵ بەپێی ئاست</span></div></button>
-<button type="button" class="stat" onclick="showPage('rewards')" aria-label="خەڵات">
-<div class="statIcon" id="statIcon4">🎁</div><div><b id="rewardCount">—</b><span>خەڵات</span></div></button>
-</div>
-
-<section class="section" id="booksSec"><div class="head"><div><h2>📚 کتێبەکان</h2><p>کتێبێک هەڵبژێرە و بەشێک بۆ کویز دەستپێبکە.</p></div></div><div class="cards" id="bookCards"><div class="empty">کتێبەکان بار دەکرێن...</div></div></section>
-<section class="section" id="quizSec"><div class="head"><div><h2>🧠 بەشەکانی کویز</h2><p>هەر بەشێک ١٠٠ پرسیاری هەڵبژاردنەیی هەیە.</p></div></div><div class="cards" id="sectionCards"><div class="empty">بۆ کردنەوەی کتێب کتێبێک هەڵبژێرە.</div></div></section>
-<section class="section" id="questionSubmitLink"><div class="head"><div><h2>✍️ پرسیاری خۆت بنێرە</h2><p>پرسیارێک لە کتێبەکەت ئامادە بکە بۆ پشکنینی مامۆستا.</p></div><button class="featureAction" onclick="showPage('questionSubmit')">دروستکردنی پرسیار ←</button></div></section>
+<div class="statIcon" id="statIco<section class="section" id="studentToolsSec">
+  <div class="head"><div><h2>🧰 ئامرازەکانی فێرخواز</h2><p>ئامرازە سادە و بەسوودەکان بۆ ڕێکخستنی خوێندن و بیرخستنەوە.</p></div></div>
+  <div class="studentToolsGrid">
+    <article class="card studentTool"><div class="toolIcon">📝</div><h3>تێبینییەکانی خوێندن</h3><p>تێبینییەکانت بنووسە؛ لە هەمان وێبگەڕدا پاشەکەوت دەبن.</p><textarea id="studentNotes" rows="5" placeholder="تێبینی، خاڵە گرنگەکان، یان پرسیاری بۆ مامۆستا..."></textarea><button class="toolAction" onclick="saveStudentNotes()">پاشەکەوتکردنی تێبینی</button><small id="notesStatus" aria-live="polite"></small></article>
+    <article class="card studentTool"><div class="toolIcon">🧠</div><h3>کارتی بیرخستنەوە</h3><p id="flashcardPrompt">ئامادەیت خۆت تاقی بکەیتەوە؟</p><div id="flashcardAnswer" class="flashcardAnswer" hidden>بابەتێک هەڵبژێرە، پێناسەکە بە وشەی خۆت بنووسە و پاشان بە کتێبەکەت بەراوردی بکە.</div><button class="toolAction" onclick="toggleFlashcard()">پیشاندانی ڕێنمایی</button></article>
+    <article class="card studentTool"><div class="toolIcon">⏱️</div><h3>پلانی خوێندن</h3><p>کارەکانی ئەم دانیشتنە نیشانە بکە بۆ ئەوەی ڕێک بخەیت.</p><label class="toolCheck"><input type="checkbox"> ٢٥ خولەک خوێندن</label><label class="toolCheck"><input type="checkbox"> ٥ خولەک پشوودان</label><label class="toolCheck"><input type="checkbox"> پوختەی وانەکە بنووسە</label><label class="toolCheck"><input type="checkbox"> خۆم بە پرسیار تاقی بکەمەوە</label></article>
+    <article class="card studentTool"><div class="toolIcon">✍️</div><h3>پرسیاری خۆت بنێرە</h3><p>پرسیارێک لە کتێبەکەت ئامادە بکە بۆ پشکنینی مامۆستا.</p><button class="toolAction" onclick="showPage('questionSubmit')">دروستکردنی پرسیار</button></article>
+  </div>
+</section>
 
 <section class="section specialPage" id="questionSubmit" style="display:none;padding-top:38px">
  <div class="head"><div><h2>✍️ ناردنی پرسیاری فێرخواز</h2><p>پرسیارەکە بۆ پشکنین دەنێردرێت و خۆکارانە ناچێتە ناو بانکی کویز.</p></div><button class="back" onclick="home()">← سەرەتا</button></div>
@@ -1175,6 +1187,24 @@ async function login(){openAuth('login');}
 db.auth.onAuthStateChange(()=>{setTimeout(refreshAccess,100);});
 setTimeout(checkAsiaPayReturn,500);
 
+
+function saveStudentNotes(){
+ const el=document.getElementById('studentNotes');
+ const status=document.getElementById('notesStatus');
+ try{localStorage.setItem('qc_student_notes',el.value);status.textContent='تێبینییەکان پاشەکەوت کران.';}
+ catch(e){status.textContent='پاشەکەوتکردن لەم وێبگەڕەدا بەردەست نییە.';}
+}
+function toggleFlashcard(){
+ const a=document.getElementById('flashcardAnswer');
+ const b=document.getElementById('flashcardPrompt');
+ a.hidden=!a.hidden;
+ b.textContent=a.hidden?'ئامادەیت خۆت تاقی بکەیتەوە؟':'پێش بینینی وەڵام، بابەتێک بە وشەی خۆت ڕوون بکەرەوە.';
+}
+function initStudentTools(){
+ const el=document.getElementById('studentNotes');
+ if(el){try{el.value=localStorage.getItem('qc_student_notes')||'';}catch(e){}}
+}
+
 function toast(t){let x=document.getElementById("toast");x.textContent=t;x.style.display="block";setTimeout(()=>x.style.display="none",3000)}
 
 const THEME_META={
@@ -1225,6 +1255,7 @@ async function submitStudentQuestion(e){
 
 load();
 refreshAccess();
+initStudentTools();
 </script>
 <script>
 /* Update safety: remove older offline caches that can keep stale UI visible. */
