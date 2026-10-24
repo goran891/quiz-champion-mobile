@@ -131,15 +131,30 @@ set search_path = public, auth, pg_temp
 as $$
 begin
   if coalesce(auth.role(), '') <> 'service_role' then
-    if new.paid_access is distinct from old.paid_access then raise exception 'paid_access is server-controlled'; end if;
-    if new.paid_at is distinct from old.paid_at then raise exception 'paid_at is server-controlled'; end if;
-    if new.points is distinct from old.points
-       and coalesce(current_setting('app.allow_server_points_update', true), 'off') <> 'on' then
-      raise exception 'points are server-controlled';
+    if tg_op = 'INSERT' then
+      if coalesce(new.role, 'student') <> 'student'
+         or coalesce(new.paid_access, false) <> false
+         or new.paid_at is not null
+         or coalesce(new.points, 0) <> 0 then
+        raise exception 'role, payment access and points are server-controlled';
+      end if;
+    else
+      if new.role is distinct from old.role then raise exception 'role is server-controlled'; end if;
+      if new.paid_access is distinct from old.paid_access then raise exception 'paid_access is server-controlled'; end if;
+      if new.paid_at is distinct from old.paid_at then raise exception 'paid_at is server-controlled'; end if;
+      if new.points is distinct from old.points
+         and coalesce(current_setting('app.allow_server_points_update', true), 'off') <> 'on' then
+        raise exception 'points are server-controlled';
+      end if;
     end if;
   end if;
   return new;
 end; $$;
+
+drop trigger if exists protect_profile_server_fields_trigger on public.profiles;
+create trigger protect_profile_server_fields_trigger
+before insert or update on public.profiles
+for each row execute function public.protect_profile_server_fields();
 
 revoke all on function public.protect_profile_server_fields() from public, anon, authenticated;
 revoke all on function public.start_academic_quiz(uuid) from public, anon;
@@ -151,6 +166,23 @@ revoke select on public.question_bank from public, anon, authenticated;
 grant select (id, section_id, question_text, option_a, option_b, option_c, option_d, difficulty, points, source_page, source_figure, source_text_locked, source_verified, active, created_at)
 on public.question_bank to authenticated;
 
+
+-- Remove permissive profile policies that expose every profile or permit broad self-updates.
+drop policy if exists "profiles_select_all" on public.profiles;
+drop policy if exists "profiles_insert_self" on public.profiles;
+drop policy if exists "profiles_update_self" on public.profiles;
+drop policy if exists "profiles_insert_own" on public.profiles;
+
+-- Sessions and answers are written only by SECURITY DEFINER quiz RPCs, never directly by clients.
+drop policy if exists "test_sessions_insert_own" on public.test_sessions;
+drop policy if exists "test_sessions_update_own" on public.test_sessions;
+drop policy if exists "test_session_questions_insert_own" on public.test_session_questions;
+drop policy if exists "test_session_answers_insert_own" on public.test_session_answers;
+drop policy if exists "test_session_answers_update_own" on public.test_session_answers;
+revoke insert, update, delete on public.test_sessions from anon, authenticated;
+revoke insert, update, delete on public.test_session_questions from anon, authenticated;
+revoke insert, update, delete on public.test_session_answers from anon, authenticated;
+grant select on public.test_sessions, public.test_session_questions, public.test_session_answers to authenticated;
 
 -- Lock student-submitted questions to the pending state; only admins can review.
 alter table public.student_question_submissions enable row level security;
